@@ -85,7 +85,9 @@ const SolutionDetail = () => {
     );
   }
 
-  const solutionImg = detail.image || imageFallbacks[detail.id] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80";
+  const isUploadedImg = detail.icon && (detail.icon.startsWith("data:") || detail.icon.startsWith("http") || detail.icon.startsWith("/"));
+  const solutionImg = isUploadedImg ? detail.icon : (detail.image || imageFallbacks[detail.id] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80");
+  const displayIcon = isUploadedImg ? "FiLayers" : (detail.icon || "FiLayers");
 
   return (
     <>
@@ -156,7 +158,7 @@ const SolutionDetail = () => {
                   color: "#e53935",
                   flexShrink: 0
                 }}>
-                  {renderServiceIcon(detail.icon, { size: 20 })}
+                  {renderServiceIcon(displayIcon, { size: 20 })}
                 </div>
                 <h1 style={{
                   fontFamily: "'Outfit', sans-serif",

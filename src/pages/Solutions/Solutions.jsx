@@ -101,7 +101,9 @@ const Solutions = () => {
               gap: 24
             }} className="solutions-ecosystem-grid">
               {list.map((item, idx) => {
-                const bgImg = item.image || imageFallbacks[item.id] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80";
+                const isUploadedImg = item.icon && (item.icon.startsWith("data:") || item.icon.startsWith("http") || item.icon.startsWith("/"));
+                const bgImg = isUploadedImg ? item.icon : (item.image || imageFallbacks[item.id] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80");
+                const displayIcon = isUploadedImg ? "FiLayers" : (item.icon || "FiLayers");
                 return (
                   <Link key={item.id || idx} to={`/solutions/${item.id}`} style={{ textDecoration: "none" }}>
                     <motion.div
@@ -142,7 +144,7 @@ const Solutions = () => {
                           color: "#e53935",
                           zIndex: 2,
                         }}>
-                          {renderServiceIcon(item.icon, { size: 18 })}
+                          {renderServiceIcon(displayIcon, { size: 18 })}
                         </div>
                       </div>
 
