@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FiCheckCircle, FiArrowRight } from "react-icons/fi";
 
 const AboutSection = () => (
@@ -29,8 +30,15 @@ const AboutSection = () => (
         alignItems: "center"
       }} className="about-layout">
 
-        {/* ── LEFT – Visual Collage (Exactly matching screenshot layout) ── */}
-        <div style={{ position: "relative", minHeight: 380 }} className="about-collage-container">
+        {/* ── LEFT – Visual Collage with scroll entrance ── */}
+        <motion.div 
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          style={{ position: "relative", minHeight: 380 }} 
+          className="about-collage-container"
+        >
           {/* Main Image */}
           <div style={{
             width: "80%",
@@ -48,44 +56,61 @@ const AboutSection = () => (
           </div>
 
           {/* Overlapping offset Image */}
-          <div style={{
-            position: "absolute",
-            bottom: 0,
-            right: 10,
-            width: "45%",
-            height: 180,
-            borderRadius: 20,
-            overflow: "hidden",
-            boxShadow: "0 12px 36px rgba(0,0,0,0.2)",
-            border: "6px solid #fff"
-          }}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 10,
+              width: "45%",
+              height: 180,
+              borderRadius: 20,
+              overflow: "hidden",
+              boxShadow: "0 12px 36px rgba(0,0,0,0.2)",
+              border: "6px solid #fff"
+            }}
+          >
             <img
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
               alt="Fintech Manager"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-          </div>
+          </motion.div>
 
           {/* Red badge */}
-          <div style={{
-            position: "absolute",
-            top: 20,
-            right: "10%",
-            background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
-            borderRadius: 16,
-            padding: "16px 24px",
-            color: "#fff",
-            boxShadow: "0 8px 24px rgba(229,57,53,0.3)",
-            textAlign: "center",
-            zIndex: 3
-          }}>
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: "10%",
+              background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
+              borderRadius: 16,
+              padding: "16px 24px",
+              color: "#fff",
+              boxShadow: "0 8px 24px rgba(229,57,53,0.3)",
+              textAlign: "center",
+              zIndex: 3
+            }}
+          >
             <div style={{ fontSize: 24, fontWeight: 900 }}>30K+</div>
             <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", marginTop: 4, textTransform: "uppercase" }}>Active Partners</div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* ── RIGHT – Text & Checkmarks (Exactly matching screenshot) ── */}
-        <div>
+        {/* ── RIGHT – Text & Checkmarks ── */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
           <span style={{
             fontSize: 12,
             fontWeight: 800,
@@ -129,37 +154,47 @@ const AboutSection = () => (
               "API-Led Financial Infrastructure",
               "Trusted Platform for MSMEs & Enterprises"
             ].map((feat, idx) => (
-              <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * idx + 0.3 }}
+                style={{ display: "flex", alignItems: "flex-start", gap: 10 }}
+              >
                 <FiCheckCircle size={15} style={{ color: "#e53935", flexShrink: 0, marginTop: 3 }} />
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: "#2d2427", lineHeight: 1.4 }}>{feat}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           <Link to="/about">
-            <button style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 9,
-              padding: "13px 30px",
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 700,
-              fontSize: 14.5,
-              border: "none",
-              borderRadius: "999px",
-              background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
-              color: "#fff",
-              boxShadow: "0 6px 20px rgba(229, 57, 53, 0.35)",
-              cursor: "pointer",
-              transition: "all 0.25s ease"
-            }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.5)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.35)"; }}
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 9,
+                padding: "13px 30px",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 700,
+                fontSize: 14.5,
+                border: "none",
+                borderRadius: "999px",
+                background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
+                color: "#fff",
+                boxShadow: "0 6px 20px rgba(229, 57, 53, 0.35)",
+                cursor: "pointer",
+                transition: "box-shadow 0.25s ease"
+              }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.5)"; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.35)"; }}
             >
               Know More <FiArrowRight size={15} />
-            </button>
+            </motion.button>
           </Link>
-        </div>
+        </motion.div>
 
       </div>
     </div>

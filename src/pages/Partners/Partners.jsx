@@ -1,6 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
 
 const partnerServicesList = [
@@ -22,8 +23,10 @@ const benefitsList = [
   { title: "Earn upto ₹4 Lakh to ₹12 Lakh per annum", icon: "₹", color: "#e53935" }
 ];
 
-const Partners = () => (
-  <>
+const Partners = () => {
+  const { isAuthenticated } = useAuth();
+  return (
+    <>
     <Helmet>
       <title>Partners Onboarding – SiD Pay</title>
       <meta name="description" content="Start your banking and digital finance business journey as a strategic partner with SiD Pay today." />
@@ -92,7 +95,7 @@ const Partners = () => (
         </p>
 
         {/* Get Started Button */}
-        <Link to="/register">
+        <Link to={isAuthenticated ? "/admin" : "/register"}>
           <button style={{
             display: "inline-flex",
             alignItems: "center",
@@ -112,7 +115,7 @@ const Partners = () => (
             onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.35)"; }}
           >
-            Get Started <FiArrowRight size={16} />
+            {isAuthenticated ? "Go to Dashboard" : "Get Started"} <FiArrowRight size={16} />
           </button>
         </Link>
       </div>
@@ -376,7 +379,8 @@ const Partners = () => (
         </Link>
       </div>
     </section>
-  </>
-);
+    </>
+  );
+};
 
 export default Partners;

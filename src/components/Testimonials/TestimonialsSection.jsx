@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { fetchTestimonials, defaultTestimonials } from "../../services/testimonialService";
 import { FiStar, FiChevronDown, FiShield } from "react-icons/fi";
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.08,
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  })
+};
 
 const TestimonialsSection = () => {
   const { tenantId } = useAuth();
@@ -42,7 +56,13 @@ const TestimonialsSection = () => {
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          style={{ textAlign: "center", marginBottom: 56 }}
+        >
           <div style={{
             display: "inline-flex",
             alignItems: "center",
@@ -82,7 +102,7 @@ const TestimonialsSection = () => {
           <p style={{ color: "#524449", fontSize: 16, maxWidth: 520, margin: "0 auto" }}>
             See how merchants and business owners across India are scaling with our payment infrastructure.
           </p>
-        </div>
+        </motion.div>
 
         {/* 3-Column Compact Grid */}
         <div style={{
@@ -92,28 +112,30 @@ const TestimonialsSection = () => {
           marginBottom: 44
         }} className="testimonial-grid">
           {items.slice(0, visibleCount).map((item, idx) => (
-            <div key={idx} style={{
-              background: "#ffffff",
-              border: "1px solid rgba(0, 0, 0, 0.05)",
-              borderTop: "3.5px solid #e53935",
-              borderRadius: 20,
-              padding: "36px 28px",
-              display: "flex",
-              flexDirection: "column",
-              position: "relative",
-              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
-              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-            }}
-              className="testimonial-card"
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.borderColor = "rgba(229, 57, 53, 0.15)";
-                e.currentTarget.style.boxShadow = "0 12px 30px rgba(229, 57, 53, 0.05)";
+            <motion.div 
+              key={idx}
+              custom={idx}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={cardVariants}
+              style={{
+                background: "#ffffff",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                borderTop: "3.5px solid #e53935",
+                borderRadius: 20,
+                padding: "36px 28px",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
+                transition: "transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease"
               }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = "none";
-                e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.05)";
-                e.currentTarget.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.015)";
+              className="testimonial-card"
+              whileHover={{
+                y: -4,
+                borderColor: "rgba(229, 57, 53, 0.15)",
+                boxShadow: "0 12px 30px rgba(229, 57, 53, 0.05)"
               }}
             >
               {/* Stars rating */}
@@ -170,28 +192,31 @@ const TestimonialsSection = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* View More button */}
         {items.length > visibleCount && (
           <div style={{ textAlign: "center" }}>
-            <button style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "12px 28px",
-              borderRadius: "999px",
-              border: "1.5px solid rgba(229, 57, 53, 0.35)",
-              background: "transparent",
-              color: "#e53935",
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: "pointer",
-              transition: "all 0.25s ease"
-            }}
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "12px 28px",
+                borderRadius: "999px",
+                border: "1.5px solid rgba(229, 57, 53, 0.35)",
+                background: "transparent",
+                color: "#e53935",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: "pointer",
+                transition: "all 0.25s ease"
+              }}
               onClick={() => setVisibleCount(prev => prev + 3)}
               onMouseEnter={e => {
                 e.currentTarget.style.background = "rgba(229, 57, 53, 0.05)";
@@ -203,7 +228,7 @@ const TestimonialsSection = () => {
               }}
             >
               View More <FiChevronDown size={16} />
-            </button>
+            </motion.button>
           </div>
         )}
       </div>

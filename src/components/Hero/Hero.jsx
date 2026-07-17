@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import {
   FiArrowRight,
   FiPlay,
@@ -19,6 +20,7 @@ const stats = [
 ];
 
 const Hero = () => {
+  const { isAuthenticated } = useAuth();
   const [ready, setReady] = useState(false);
   useEffect(() => { const t = setTimeout(() => setReady(true), 80); return () => clearTimeout(t); }, []);
 
@@ -129,7 +131,7 @@ const Hero = () => {
 
             {/* CTAs */}
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 12 }}>
-              <Link to="/register">
+              <Link to={isAuthenticated ? "/admin" : "/register"}>
                 <button style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -148,7 +150,7 @@ const Hero = () => {
                 }}
                   onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 36px rgba(229,57,53,0.4)"; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 4px 22px rgba(229,57,53,0.25)"; }}>
-                  Get Started <FiArrowRight size={16} />
+                  {isAuthenticated ? "Go to Dashboard" : "Get Started"} <FiArrowRight size={16} />
                 </button>
               </Link>
               <Link to="/contact">

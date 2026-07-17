@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   FiCheckCircle,
   FiArrowRight,
@@ -57,6 +58,19 @@ const partnerTypes = [
   }
 ];
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.08,
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  })
+};
+
 const BecomePartner = () => {
   return (
     <section style={{
@@ -89,7 +103,13 @@ const BecomePartner = () => {
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          style={{ textAlign: "center", marginBottom: 56 }}
+        >
           <div style={{
             display: "inline-flex",
             alignItems: "center",
@@ -129,7 +149,7 @@ const BecomePartner = () => {
           <p style={{ color: "#524449", fontSize: 16, maxWidth: 540, margin: "0 auto" }}>
             Choose a partner program tailored to your business model and start expanding your revenue streams.
           </p>
-        </div>
+        </motion.div>
 
         {/* Partner Cards Grid */}
         <div style={{
@@ -140,27 +160,29 @@ const BecomePartner = () => {
           {partnerTypes.map((type, i) => {
             const Icon = type.icon;
             return (
-              <div key={i} style={{
-                background: "#ffffff",
-                border: "1px solid rgba(0, 0, 0, 0.05)",
-                borderRadius: 24,
-                padding: "36px 28px",
-                display: "flex",
-                flexDirection: "column",
-                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
-                transition: "all 0.3s ease",
-                position: "relative",
-                overflow: "hidden"
-              }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-6px)";
-                  e.currentTarget.style.borderColor = "rgba(229, 57, 53, 0.15)";
-                  e.currentTarget.style.boxShadow = "0 12px 30px rgba(229, 57, 53, 0.05)";
+              <motion.div 
+                key={i}
+                custom={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={cardVariants}
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid rgba(0, 0, 0, 0.05)",
+                  borderRadius: 24,
+                  padding: "36px 28px",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
+                  transition: "transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease",
+                  position: "relative",
+                  overflow: "hidden"
                 }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.05)";
-                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.015)";
+                whileHover={{
+                  y: -6,
+                  borderColor: "rgba(229, 57, 53, 0.15)",
+                  boxShadow: "0 12px 30px rgba(229, 57, 53, 0.05)"
                 }}
               >
                 {/* Top Accent Icon & Title */}
@@ -237,7 +259,7 @@ const BecomePartner = () => {
                     Apply Now <FiArrowRight size={15} />
                   </button>
                 </Link>
-              </div>
+              </motion.div>
             );
           })}
         </div>

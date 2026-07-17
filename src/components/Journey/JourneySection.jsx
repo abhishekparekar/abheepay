@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { FiSearch, FiMessageSquare, FiFileText, FiShield, FiUserCheck, FiSend } from "react-icons/fi";
 
 const steps = [
@@ -9,6 +10,21 @@ const steps = [
   { step: 5, label: "Account Setup",  icon: FiUserCheck,     desc: "Configure your portal & preferences" },
   { step: 6, label: "Let Start",      icon: FiSend,          desc: "Launch your payment operations" },
 ];
+
+const stepVariants = {
+  hidden: { opacity: 0, scale: 0.8, y: 20 },
+  visible: (i) => ({
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.55,
+      type: "spring",
+      stiffness: 70
+    }
+  })
+};
 
 const JourneySection = () => {
   return (
@@ -33,7 +49,13 @@ const JourneySection = () => {
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 72 }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          style={{ textAlign: "center", marginBottom: 72 }}
+        >
           <h2 style={{
             fontFamily: "'Outfit', sans-serif",
             fontWeight: 900,
@@ -54,7 +76,7 @@ const JourneySection = () => {
             A simplified, secure onboarding roadmap to power your financial services operations.
           </p>
           <div style={{ width: 56, height: 3, background: "linear-gradient(90deg, #e53935, #d81b60)", borderRadius: 2, margin: "20px auto 0" }} />
-        </div>
+        </motion.div>
 
         {/* Timeline Container */}
         <div style={{
@@ -67,28 +89,43 @@ const JourneySection = () => {
         }} className="timeline-container">
           
           {/* Dashed connector line for desktop */}
-          <div style={{
-            position: "absolute",
-            top: 44,
-            left: "5%",
-            right: "5%",
-            height: 2,
-            borderTop: "2px dashed rgba(229, 57, 53, 0.22)",
-            zIndex: 0
-          }} className="desktop-timeline-line" />
+          <motion.div 
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            style={{
+              position: "absolute",
+              top: 44,
+              left: "5%",
+              right: "5%",
+              height: 2,
+              borderTop: "2px dashed rgba(229, 57, 53, 0.22)",
+              transformOrigin: "left",
+              zIndex: 0
+            }} className="desktop-timeline-line" 
+          />
 
           {steps.map((item, idx) => {
             const IconComponent = item.icon;
             return (
-              <div key={idx} style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                flex: 1,
-                position: "relative",
-                zIndex: 1
-              }} className="timeline-step">
+              <motion.div 
+                key={idx}
+                custom={idx}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={stepVariants}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                  flex: 1,
+                  position: "relative",
+                  zIndex: 1
+                }} className="timeline-step"
+              >
                 
                 {/* Step circle container */}
                 <div style={{
@@ -117,33 +154,29 @@ const JourneySection = () => {
                   </div>
 
                   {/* Main circle */}
-                  <div style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: "50%",
-                    background: "#ffffff",
-                    border: "2.5px solid rgba(229, 57, 53, 0.18)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.02)",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    cursor: "pointer"
-                  }}
+                  <motion.div 
+                    whileHover={{
+                      borderColor: "#e53935",
+                      y: -4,
+                      boxShadow: "0 12px 30px rgba(229, 57, 53, 0.08)"
+                    }}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      background: "#ffffff",
+                      border: "2.5px solid rgba(229, 57, 53, 0.18)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 8px 24px rgba(0, 0, 0, 0.02)",
+                      transition: "borderColor 0.3s ease, transform 0.3s ease, boxShadow 0.3s ease",
+                      cursor: "pointer"
+                    }}
                     className="step-circle"
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = "#e53935";
-                      e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow = "0 12px 30px rgba(229, 57, 53, 0.08)";
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = "rgba(229, 57, 53, 0.18)";
-                      e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.02)";
-                    }}
                   >
                     <IconComponent size={24} style={{ color: "#e53935", transition: "transform 0.25s ease" }} />
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Text Labels */}
@@ -183,7 +216,7 @@ const JourneySection = () => {
                 }} className="step-desc">
                   {item.desc}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
