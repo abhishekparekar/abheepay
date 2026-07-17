@@ -12,7 +12,7 @@ const Contact = () => (
 
     {/* Section Wrapper */}
     <section style={{
-      padding: "160px 24px 80px",
+      padding: "76px 24px 48px",
       background: "#f4f7f6",
       color: "#0c0509",
       minHeight: "100vh"
