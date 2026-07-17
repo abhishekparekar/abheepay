@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { getCollection, setDocument, deleteDocument } from "../../firebase/firestore";
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiUploadCloud } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiUploadCloud, FiImage } from "react-icons/fi";
 
 const ManagePartners = () => {
   const { tenantId } = useAuth();
@@ -9,15 +9,10 @@ const ManagePartners = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  // Form State
-  const [form, setForm] = useState({
-    name: "",
-    logo: "", // holds uploaded base64 data URL
-    emoji: "", // fallback icon text/class
-    order: 1,
-    active: true
-  });
+  const emptyForm = { name: "", logo: "", order: 1, active: true };
+  const [form, setForm] = useState(emptyForm);
 
   const loadData = async () => {
     setLoading(true);
@@ -25,339 +20,209 @@ const ManagePartners = () => {
       let data = await getCollection(tenantId, "partners");
       if (!data || data.length === 0) {
         const defaults = [
-          { id: "paysprint", name: "PaySprint", emoji: "🤝", order: 1, active: true },
-          { id: "axis", name: "Axis Bank", emoji: "🏦", order: 2, active: true },
-          { id: "hdfc", name: "HDFC Bank", emoji: "💳", order: 3, active: true },
-          { id: "pinelabs", name: "Pine Labs", emoji: "🟢", order: 4, active: true },
-          { id: "razorpay", name: "Razorpay", emoji: "🌐", order: 5, active: true },
-          { id: "instantmudra", name: "Instant Mudra", emoji: "📱", order: 6, active: true }
+          { id: "paysprint",    name: "PaySprint",     emoji: "🤝", order: 1, active: true },
+          { id: "axis",         name: "Axis Bank",     emoji: "🏦", order: 2, active: true },
+          { id: "hdfc",         name: "HDFC Bank",     emoji: "💳", order: 3, active: true },
+          { id: "pinelabs",     name: "Pine Labs",     emoji: "🟢", order: 4, active: true },
+          { id: "razorpay",     name: "Razorpay",      emoji: "🌐", order: 5, active: true },
+          { id: "instantmudra", name: "Instant Mudra", emoji: "📱", order: 6, active: true },
         ];
-        for (const item of defaults) {
-          await setDocument(tenantId, "partners", item.id, item);
-        }
+        for (const item of defaults) await setDocument(tenantId, "partners", item.id, item);
         data = await getCollection(tenantId, "partners");
       }
-      const sorted = [...data].sort((a, b) => (a.order || 0) - (b.order || 0));
-      setList(sorted);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+      setList([...data].sort((a, b) => (a.order || 0) - (b.order || 0)));
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    loadData();
-  }, [tenantId]);
+  useEffect(() => { loadData(); }, [tenantId]);
 
-  const handleOpenAdd = () => {
+  const openAdd = () => {
     setEditingItem(null);
-    setForm({
-      name: "",
-      logo: "",
-      emoji: "FiBriefcase",
-      order: list.length + 1,
-      active: true
-    });
+    setForm({ ...emptyForm, order: list.length + 1 });
     setModalOpen(true);
   };
-
-  const handleOpenEdit = (item) => {
+  const openEdit = (item) => {
     setEditingItem(item);
-    setForm({
-      name: item.name || "",
-      logo: item.logo || "",
-      emoji: item.emoji || "FiBriefcase",
-      order: item.order || 1,
-      active: item.active !== false
-    });
+    setForm({ name: item.name || "", logo: item.logo || "", order: item.order || 1, active: item.active !== false });
     setModalOpen(true);
   };
-
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this partner integration?")) return;
-    try {
-      await deleteDocument(tenantId, "partners", id);
-      loadData();
-    } catch (err) {
-      console.error(err);
-    }
+    if (!window.confirm("Delete this partner?")) return;
+    await deleteDocument(tenantId, "partners", id);
+    loadData();
   };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setForm(f => ({ ...f, logo: reader.result, emoji: reader.result }));
-    };
+    reader.onloadend = () => setForm(f => ({ ...f, logo: reader.result }));
     reader.readAsDataURL(file);
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setSaving(true);
     try {
-      const partnerId = editingItem ? editingItem.id : form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") || `partner-${Date.now()}`;
-      
-      const payload = {
-        id: partnerId,
-        name: form.name,
-        logo: form.logo,
-        emoji: form.emoji,
-        order: Number(form.order),
-        active: form.active,
-        updatedAt: new Date()
-      };
-
-      await setDocument(tenantId, "partners", partnerId, payload);
+      const id = editingItem
+        ? editingItem.id
+        : (form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") || `partner-${Date.now()}`);
+      await setDocument(tenantId, "partners", id, {
+        id, name: form.name, logo: form.logo, emoji: form.logo || "🏦",
+        order: Number(form.order), active: form.active, updatedAt: new Date()
+      });
       setModalOpen(false);
       loadData();
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
+    finally { setSaving(false); }
   };
 
+  const isImg = (s) => s && (s.startsWith("data:image") || s.startsWith("http") || s.startsWith("/"));
+
   return (
-    <div style={{ animation: "fadeIn 0.35s ease both" }} className="admin-page-container">
-      
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 36 }}>
-        <div>
-          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 28, margin: 0, color: "#0c0509" }}>
-            Manage Partners
-          </h1>
-          <p style={{ color: "#524449", fontSize: 14.5, marginTop: 6, margin: 0 }}>
-            Configure and upload branding logos for corporate and banking partners on your homepage.
-          </p>
+    <div className="admin-page-container">
+
+      {/* Top Bar */}
+      <div className="admin-top-bar">
+        <div className="admin-page-title" style={{ marginBottom: 0 }}>
+          <h1>Manage Partners</h1>
+          <p>Add, edit or remove partner logos displayed on your homepage.</p>
         </div>
-        <button
-          onClick={handleOpenAdd}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "12px 24px",
-            background: "linear-gradient(135deg,#e53935,#d81b60)",
-            borderRadius: 12,
-            fontWeight: 700,
-            fontSize: 14,
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            boxShadow: "0 4px 14px rgba(229,57,53,0.2)"
-          }}
-        >
-          <FiPlus size={16} /> Add Partner
+        <button className="admin-btn-primary" onClick={openAdd}>
+          <FiPlus size={15} /> Add Partner
         </button>
       </div>
 
-      {/* Partners List Table */}
+      {/* Table */}
       {loading ? (
-        <div style={{ padding: "80px 0", textAlign: "center", color: "#524449" }}>Loading partner integrations...</div>
+        <div className="admin-empty">Loading…</div>
       ) : list.length === 0 ? (
-        <div style={{ padding: "80px 0", textAlign: "center", color: "#524449" }}>No partner configurations found. Add one above.</div>
+        <div className="admin-empty">No partners found. Add one above.</div>
       ) : (
-        <div style={{
-          background: "#ffffff",
-          border: "1px solid rgba(0, 0, 0, 0.05)",
-          borderRadius: 20,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.015)",
-          overflow: "hidden"
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)", background: "#f4f7f6" }}>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>ORDER</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>LOGO</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>PARTNER NAME</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>STATUS</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700, textAlign: "right" }}>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((item, idx) => (
-                <tr key={item.id} style={{
-                  borderBottom: idx < list.length - 1 ? "1px solid rgba(0, 0, 0, 0.04)" : "none",
-                  transition: "background 0.2s ease"
-                }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#f9fbfb"}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  <td style={{ padding: "18px 24px", fontSize: 14.5, fontWeight: 700, color: "#e53935" }}>{item.order || 0}</td>
-                  <td style={{ padding: "18px 24px" }}>
-                    {item.logo && (item.logo.startsWith("data:") || item.logo.startsWith("http") || item.logo.startsWith("/")) ? (
-                      <img src={item.logo} alt="logo" style={{ height: 32, maxWidth: 100, objectFit: "contain" }} />
-                    ) : (
-                      <span style={{ fontSize: 22 }}>💼</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "18px 24px", fontSize: 15, fontWeight: 700, color: "#0c0509" }}>{item.name}</td>
-                  <td style={{ padding: "18px 24px" }}>
-                    <span style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: item.active !== false ? "#2e7d32" : "#e53935",
-                      background: item.active !== false ? "rgba(46,125,50,0.06)" : "rgba(229,57,53,0.06)",
-                      border: item.active !== false ? "1px solid rgba(46,125,50,0.15)" : "1px solid rgba(229,57,53,0.15)",
-                      padding: "4px 10px",
-                      borderRadius: 20
-                    }}>
-                      {item.active !== false ? "ACTIVE" : "INACTIVE"}
-                    </span>
-                  </td>
-                  <td style={{ padding: "18px 24px", textAlign: "right" }}>
-                    <div style={{ display: "inline-flex", gap: 10 }}>
-                      <button onClick={() => handleOpenEdit(item)} style={{ width: 34, height: 34, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", color: "#524449", cursor: "pointer", transition: "all 0.2s" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "#f4f7f6"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; }}
-                      >
-                        <FiEdit2 size={14} />
-                      </button>
-                      <button onClick={() => handleDelete(item.id)} style={{ width: 34, height: 34, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", color: "#e53935", cursor: "pointer", transition: "all 0.2s" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(229,57,53,0.05)"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; }}
-                      >
-                        <FiTrash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
+        <div className="admin-table-wrap">
+          <div style={{ overflowX: "auto" }}>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th style={{ width: 60 }}>#</th>
+                  <th style={{ width: 80 }}>Logo</th>
+                  <th>Name</th>
+                  <th style={{ width: 100 }}>Status</th>
+                  <th style={{ width: 100, textAlign: "right" }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {list.map((item) => (
+                  <tr key={item.id}>
+                    <td style={{ fontWeight: 700, color: "#e53935" }}>{item.order || "—"}</td>
+                    <td>
+                      {isImg(item.logo) ? (
+                        <img src={item.logo} alt={item.name} style={{ height: 30, maxWidth: 80, objectFit: "contain", display: "block" }} />
+                      ) : (
+                        <span style={{ fontSize: 22 }}>{item.emoji || "🏦"}</span>
+                      )}
+                    </td>
+                    <td style={{ fontWeight: 600 }}>{item.name}</td>
+                    <td>
+                      <span className={`admin-badge ${item.active !== false ? "green" : "red"}`}>
+                        {item.active !== false ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                        <button className="admin-btn-icon" onClick={() => openEdit(item)} title="Edit">
+                          <FiEdit2 size={14} />
+                        </button>
+                        <button className="admin-btn-icon danger" onClick={() => handleDelete(item.id)} title="Delete">
+                          <FiTrash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {/* Add/Edit Modal */}
+      {/* Modal */}
       {modalOpen && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(17, 7, 9, 0.4)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          backdropFilter: "blur(4px)"
-        }}>
-          <div style={{
-            background: "#ffffff",
-            border: "1px solid rgba(0,0,0,0.05)",
-            borderRadius: 24,
-            width: "90%",
-            maxWidth: 440,
-            padding: "24px 28px",
-            boxShadow: "0 20px 60px rgba(17,7,9,0.15)",
-            position: "relative",
-            maxHeight: "90vh",
-            overflowY: "auto"
-          }} className="admin-modal">
-            <button onClick={() => setModalOpen(false)} style={{ position: "absolute", top: 24, right: 24, color: "#524449", background: "none", border: "none", cursor: "pointer" }}>
+        <div className="admin-modal-overlay" onClick={() => setModalOpen(false)}>
+          <div className="admin-modal-box" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setModalOpen(false)} style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", cursor: "pointer", color: "#524449" }}>
               <FiX size={20} />
             </button>
-            <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 20, color: "#0c0509", marginTop: 0 }}>
-              {editingItem ? "Edit Partner" : "Add Partner"}
-            </h2>
+            <h2 className="admin-modal-title">{editingItem ? "Edit Partner" : "Add Partner"}</h2>
 
             <form onSubmit={onSubmit}>
-              <div className="form-group" style={{ marginBottom: 14 }}>
-                <label className="input-label">Partner Name</label>
-                <input name="name" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input-field" placeholder="e.g. Axis Bank" />
+              <div className="admin-form-group">
+                <label className="admin-form-label">Partner Name *</label>
+                <input
+                  className="admin-form-input"
+                  required
+                  value={form.name}
+                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="e.g. Axis Bank"
+                />
               </div>
 
-              {/* Upload Branding Logo */}
-              <div className="form-group" style={{ marginBottom: 14 }}>
-                <label className="input-label" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <FiUploadCloud size={14} /> Upload Partner Logo Image
+              <div className="admin-form-group">
+                <label className="admin-form-label" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <FiUploadCloud size={13} /> Upload Logo Image
                 </label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="input-field" style={{ padding: "6px 12px" }} />
-                {form.logo && (
-                  <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 11.5, color: "#524449", fontWeight: 600 }}>Preview:</span>
-                    <div style={{
-                      padding: 8,
-                      background: "#f4f7f6",
-                      borderRadius: 8,
-                      border: "1px solid rgba(0,0,0,0.06)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}>
-                      <img src={form.logo} alt="Preview" style={{ height: 36, maxWidth: 120, objectFit: "contain" }} />
-                    </div>
+                <input
+                  className="admin-form-input"
+                  type="file" accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ padding: "8px 12px", cursor: "pointer" }}
+                />
+                {form.logo && isImg(form.logo) && (
+                  <div style={{ marginTop: 10, padding: 10, background: "#f9fafb", borderRadius: 10, border: "1px solid rgba(0,0,0,0.06)", display: "inline-block" }}>
+                    <div style={{ fontSize: 11, color: "#77676c", marginBottom: 6 }}>Preview</div>
+                    <img src={form.logo} alt="preview" style={{ height: 40, maxWidth: 120, objectFit: "contain", display: "block" }} />
                   </div>
                 )}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <div className="form-group">
-                  <label className="input-label">Display Order</label>
-                  <input type="number" name="order" value={form.order} onChange={e => setForm(f => ({ ...f, order: e.target.value }))} className="input-field" />
+              <div className="admin-form-row">
+                <div className="admin-form-group">
+                  <label className="admin-form-label">Display Order</label>
+                  <input
+                    className="admin-form-input"
+                    type="number" min="1"
+                    value={form.order}
+                    onChange={e => setForm(f => ({ ...f, order: e.target.value }))}
+                  />
                 </div>
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <label className="input-label">Active Status</label>
-                  <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginTop: 8 }}>
-                    <input type="checkbox" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} style={{ width: 18, height: 18, accentColor: "#e53935" }} />
-                    <span style={{ fontSize: 14, color: "#524449", fontWeight: 600 }}>Live on website</span>
+                <div className="admin-form-group" style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+                  <label className="admin-form-label">Status</label>
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginTop: 4 }}>
+                    <input
+                      type="checkbox"
+                      checked={form.active}
+                      onChange={e => setForm(f => ({ ...f, active: e.target.checked }))}
+                      style={{ width: 16, height: 16, accentColor: "#e53935" }}
+                    />
+                    <span style={{ fontSize: 13.5, color: "#524449", fontWeight: 500 }}>Active on website</span>
                   </label>
                 </div>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24 }}>
-                <button type="button" onClick={() => setModalOpen(false)} style={{ padding: "11px 20px", borderRadius: 10, border: "1px solid #e1e6eb", background: "transparent", color: "#524449", fontWeight: 600, cursor: "pointer" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 20 }}>
+                <button type="button" onClick={() => setModalOpen(false)}
+                  style={{ padding: "9px 18px", borderRadius: 10, border: "1px solid rgba(0,0,0,0.1)", background: "#f9fafb", color: "#524449", fontWeight: 600, cursor: "pointer", fontSize: 13.5 }}>
                   Cancel
                 </button>
-                <button type="submit" style={{ padding: "11px 24px", borderRadius: 10, background: "linear-gradient(135deg,#e53935,#d81b60)", color: "#fff", fontWeight: 700, border: "none", cursor: "pointer" }}>
-                  Save Partner
+                <button type="submit" disabled={saving} className="admin-btn-primary">
+                  {saving ? "Saving…" : editingItem ? "Update" : "Add Partner"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      <style>{`
-        .admin-page-container .input-field {
-          width: 100%;
-          padding: 10px 12px;
-          border-radius: 8px;
-          border: 1px solid #e1e6eb;
-          font-size: 13.5px;
-          color: #0c0509;
-          outline: none;
-          background: #ffffff;
-          box-sizing: border-box;
-          transition: all 0.25s ease;
-        }
-        .admin-page-container .input-field:focus,
-        .admin-modal .input-field:focus {
-          border-color: #e53935 !important;
-          box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.08) !important;
-        }
-        .admin-page-container .input-label,
-        .admin-modal .input-label {
-          display: block;
-          font-size: 10.5px;
-          font-weight: 700;
-          color: #524449;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          margin-bottom: 4px;
-          margin-top: 10px;
-        }
-        .admin-modal .input-field {
-          width: 100%;
-          padding: 10px 12px;
-          border-radius: 8px;
-          border: 1px solid #e1e6eb;
-          font-size: 13.5px;
-          color: #0c0509;
-          outline: none;
-          background: #ffffff;
-          box-sizing: border-box;
-          transition: all 0.25s ease;
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,0 +1,321 @@
+/* ============================================================
+   Admin Design System – SiD Pay Admin Portal
+   Compact, clean, responsive across all devices
+   ============================================================ */
+
+/* ── Page Container ─────────────────────────────────────────── */
+.admin-page-container {
+  animation: fadeIn 0.3s ease both;
+}
+
+/* ── Page Title Block ───────────────────────────────────────── */
+.admin-page-title {
+  margin-bottom: 28px;
+}
+.admin-page-title h1 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: clamp(20px, 3vw, 26px);
+  color: #0c0509;
+  margin: 0 0 4px;
+}
+.admin-page-title p {
+  color: #524449;
+  font-size: 13.5px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Top Bar (title + action button) ───────────────────────── */
+.admin-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* ── Stats Grid ─────────────────────────────────────────────── */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* ── Dashboard sub-grid ─────────────────────────────────────── */
+.admin-dash-subgrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* ── Data Grid (card list) ──────────────────────────────────── */
+.admin-data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* ── Card Base ──────────────────────────────────────────────── */
+.admin-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+  transition: all 0.22s ease;
+}
+.admin-card:hover {
+  border-color: rgba(229,57,53,0.12);
+  box-shadow: 0 6px 20px rgba(229,57,53,0.05);
+  transform: translateY(-2px);
+}
+
+/* ── Table styles ───────────────────────────────────────────── */
+.admin-table-wrap {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.admin-table th {
+  background: #f4f7f6;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #77676c;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.admin-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  color: #0c0509;
+  vertical-align: middle;
+}
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+.admin-table tr:hover td {
+  background: #f9fafb;
+}
+
+/* ── Tab Bar ────────────────────────────────────────────────── */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+  padding-bottom: 0;
+  flex-wrap: wrap;
+}
+.admin-tab-btn {
+  padding: 9px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #524449;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s ease;
+  margin-bottom: -1px;
+}
+.admin-tab-btn.active {
+  color: #e53935;
+  border-bottom-color: #e53935;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.admin-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #e53935 0%, #d81b60 100%);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 3px 12px rgba(229,57,53,0.28);
+  white-space: nowrap;
+}
+.admin-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 18px rgba(229,57,53,0.4);
+}
+
+.admin-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.07);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #524449;
+  font-size: 0;
+}
+.admin-btn-icon:hover {
+  background: #f4f7f6;
+  border-color: rgba(0,0,0,0.12);
+}
+.admin-btn-icon.danger:hover {
+  background: rgba(229,57,53,0.06);
+  border-color: rgba(229,57,53,0.2);
+  color: #e53935;
+}
+
+/* ── Badge / Status Pill ────────────────────────────────────── */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.admin-badge.green {
+  background: rgba(34,197,94,0.1);
+  color: #16a34a;
+}
+.admin-badge.red {
+  background: rgba(229,57,53,0.1);
+  color: #e53935;
+}
+.admin-badge.gray {
+  background: rgba(0,0,0,0.05);
+  color: #524449;
+}
+.admin-badge.purple {
+  background: rgba(124,58,237,0.08);
+  color: #7c3aed;
+}
+
+/* ── Modal Overlay ──────────────────────────────────────────── */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+.admin-modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  animation: fadeUp 0.25s ease both;
+  position: relative;
+}
+.admin-modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #0c0509;
+  margin: 0 0 20px;
+}
+
+/* ── Form Fields ────────────────────────────────────────────── */
+.admin-form-group {
+  margin-bottom: 16px;
+}
+.admin-form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #524449;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.admin-form-input,
+.admin-form-textarea,
+.admin-form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  font-size: 14px;
+  color: #0c0509;
+  background: #f9fafb;
+  transition: border-color 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+.admin-form-input:focus,
+.admin-form-textarea:focus,
+.admin-form-select:focus {
+  outline: none;
+  border-color: #e53935;
+  background: #fff;
+}
+.admin-form-textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.55;
+}
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Empty State ────────────────────────────────────────────── */
+.admin-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #524449;
+  font-size: 14px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media(max-width: 1024px) {
+  .admin-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media(max-width: 768px) {
+  .admin-dash-subgrid { grid-template-columns: 1fr !important; }
+  .admin-data-grid { grid-template-columns: 1fr !important; }
+  .admin-form-row { grid-template-columns: 1fr !important; }
+  .admin-table { font-size: 12.5px; }
+  .admin-table th, .admin-table td { padding: 10px 12px; }
+  .admin-modal-box { padding: 22px 18px; border-radius: 16px; }
+}
+@media(max-width: 480px) {
+  .admin-stats-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  .admin-top-bar { flex-direction: column; align-items: flex-start; }
+}
