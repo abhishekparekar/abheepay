@@ -131,7 +131,7 @@ const JourneySection = () => {
                 <div style={{
                   position: "relative",
                   marginBottom: 20
-                }}>
+                }} className="step-circle-wrapper">
                   {/* Step number badge */}
                   <div style={{
                     position: "absolute",
@@ -179,43 +179,46 @@ const JourneySection = () => {
                   </motion.div>
                 </div>
 
-                {/* Text Labels */}
-                <h3 style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontWeight: 800,
-                  fontSize: 15.5,
-                  color: "#0c0509",
-                  marginBottom: 8,
-                  marginTop: 0
-                }}>
-                  {item.label}
-                </h3>
+                {/* Text Content Container (wrapped to stack vertically in mobile row view) */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }} className="step-text-container">
+                  {/* Text Labels */}
+                  <h3 style={{
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 800,
+                    fontSize: 15.5,
+                    color: "#0c0509",
+                    marginBottom: 8,
+                    marginTop: 0
+                  }}>
+                    {item.label}
+                  </h3>
 
-                <div style={{
-                  fontSize: 10.5,
-                  fontWeight: 700,
-                  color: "#e53935",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  padding: "4px 12px",
-                  borderRadius: 20,
-                  background: "rgba(229, 57, 53, 0.06)",
-                  border: "1px solid rgba(229, 57, 53, 0.12)",
-                  display: "inline-block",
-                  marginBottom: 8
-                }}>
-                  Step {item.step}
+                  <div style={{
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    color: "#e53935",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    padding: "4px 12px",
+                    borderRadius: 20,
+                    background: "rgba(229, 57, 53, 0.06)",
+                    border: "1px solid rgba(229, 57, 53, 0.12)",
+                    display: "inline-block",
+                    marginBottom: 8
+                  }}>
+                    Step {item.step}
+                  </div>
+
+                  <p style={{
+                    color: "#524449",
+                    fontSize: 12.5,
+                    lineHeight: 1.5,
+                    maxWidth: 130,
+                    margin: 0
+                  }} className="step-desc">
+                    {item.desc}
+                  </p>
                 </div>
-
-                <p style={{
-                  color: "#524449",
-                  fontSize: 12.5,
-                  lineHeight: 1.5,
-                  maxWidth: 130,
-                  margin: 0
-                }} className="step-desc">
-                  {item.desc}
-                </p>
               </motion.div>
             );
           })}
@@ -229,9 +232,9 @@ const JourneySection = () => {
         @media(max-width:820px){
           .timeline-container {
             flex-direction: column !important;
-            gap: 40px !important;
+            gap: 36px !important;
             align-items: flex-start !important;
-            padding-left: 20px !important;
+            padding-left: 10px !important;
           }
           .desktop-timeline-line {
             display: none !important;
@@ -241,7 +244,7 @@ const JourneySection = () => {
             position: absolute;
             top: 10px;
             bottom: 10px;
-            left: 58px;
+            left: 50px;
             width: 2px;
             border-left: 2px dashed rgba(229, 57, 53, 0.18);
             z-index: 0;
@@ -253,12 +256,18 @@ const JourneySection = () => {
             gap: 20px !important;
             width: 100% !important;
           }
+          .step-circle-wrapper {
+            margin-bottom: 0 !important;
+            flex-shrink: 0 !important;
+          }
+          .step-text-container {
+            align-items: flex-start !important;
+            text-align: left !important;
+            flex: 1;
+          }
           .step-desc {
             max-width: 100% !important;
             text-align: left !important;
-          }
-          .timeline-step > div {
-            margin-bottom: 0 !important;
           }
         }
       `}</style>
