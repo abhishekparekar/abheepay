@@ -43,19 +43,7 @@ const About = () => {
         overflow: "hidden"
       }}>
         <div className="container">
-          {/* Header Title */}
-          <div style={{ marginBottom: 24, textAlign: "left" }}>
-            <h1 style={{
-              fontFamily: "'Outfit', sans-serif",
-              fontWeight: 900,
-              fontSize: "clamp(2rem, 4vw, 2.8rem)",
-              letterSpacing: "-0.03em",
-              color: "#0c0509",
-              margin: 0
-            }}>
-              About SiD Pay
-            </h1>
-          </div>
+
 
           {/* Flex Split */}
           <div style={{
@@ -230,7 +218,7 @@ const About = () => {
 
       {/* Section 3: Our Mission & Vision (Exactly matching layout in screenshot) */}
       <section style={{
-        padding: "96px 24px",
+        padding: "64px 24px 72px",
         background: "#f8f9fa",
         color: "#0c0509"
       }}>
@@ -360,13 +348,13 @@ const About = () => {
 
       {/* Section 4: Our Core Values (Exactly matching layout in screenshot) */}
       <section style={{
-        padding: "96px 24px",
+        padding: "64px 24px",
         background: "#ffffff",
         color: "#0c0509",
         textAlign: "center"
       }}>
         <div className="container">
-          <div style={{ marginBottom: 56 }}>
+          <div style={{ marginBottom: 36 }}>
             <h2 style={{
               fontFamily: "'Outfit', sans-serif",
               fontWeight: 900,
@@ -524,14 +512,14 @@ const About = () => {
 
       {/* Section 5: Strategic Partnerships (Exactly matching layout in screenshot - Light version) */}
       <section style={{
-        padding: "80px 24px 96px",
+        padding: "64px 24px",
         background: "#f8f9fa",
         color: "#0c0509",
         textAlign: "center"
       }}>
         <div className="container">
           {/* Header */}
-          <div style={{ marginBottom: 44 }}>
+          <div style={{ marginBottom: 28 }}>
             <span style={{
               fontSize: 12,
               fontWeight: 800,
