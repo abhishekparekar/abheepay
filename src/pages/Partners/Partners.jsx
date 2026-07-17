@@ -426,48 +426,78 @@ const Partners = () => {
         position: "relative",
         overflow: "hidden"
       }}>
-        <div className="orb orb-magenta" style={{ width: 400, height: 400, bottom: "-100px", right: "-100px", opacity: 0.07 }} />
+        {/* Neon glowing backdrops */}
+        <div style={{
+          position: "absolute",
+          top: "-30%",
+          left: "-10%",
+          width: 320,
+          height: 320,
+          background: "radial-gradient(circle, rgba(229,57,53,0.08) 0%, transparent 70%)",
+          pointerEvents: "none",
+          filter: "blur(50px)"
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "-30%",
+          right: "-10%",
+          width: 320,
+          height: 320,
+          background: "radial-gradient(circle, rgba(216,27,96,0.08) 0%, transparent 70%)",
+          pointerEvents: "none",
+          filter: "blur(50px)"
+        }} />
 
-        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: 700 }}>
-          <h2 style={{
-            fontFamily: "'Outfit',sans-serif",
-            fontWeight: 900,
-            fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
-            letterSpacing: "-0.01em",
-            color: "#fff",
-            marginBottom: 14,
-            marginTop: 0
-          }}>
-            Become Our Partner Today
-          </h2>
-          <p style={{ color: "#c9a8b4", maxWidth: 500, margin: "0 auto 28px", fontSize: 15, lineHeight: 1.6 }}>
-            Empower your merchant network with cutting-edge retail banking, utility payments, and financial API services.
-          </p>
-
-          <Link to={isAuthenticated ? "/admin" : "/register"}>
-            <button style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "15px 36px",
-              background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
+        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: 800 }}>
+          <div style={{
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            borderRadius: 24,
+            padding: "48px 32px",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)",
+            backdropFilter: "blur(10px)",
+            textAlign: "center"
+          }} className="cta-glass-card">
+            <h2 style={{
+              fontFamily: "'Outfit',sans-serif",
+              fontWeight: 900,
+              fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
+              letterSpacing: "-0.01em",
               color: "#fff",
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 700,
-              fontSize: 14.5,
-              border: "none",
-              borderRadius: 12,
-              boxShadow: "0 6px 20px rgba(229, 57, 53, 0.3)",
-              cursor: "pointer",
-              transition: "all 0.25s ease",
-              letterSpacing: "0.02em"
-            }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.45)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.3)"; }}
-            >
-              JOIN AS PARTNER NOW
-            </button>
-          </Link>
+              marginBottom: 14,
+              marginTop: 0
+            }}>
+              Become Our Partner Today
+            </h2>
+            <p style={{ color: "#c9a8b4", maxWidth: 520, margin: "0 auto 28px", fontSize: 15, lineHeight: 1.6 }}>
+              Empower your merchant network with cutting-edge retail banking, utility payments, and financial API services.
+            </p>
+
+            <Link to={isAuthenticated ? "/admin" : "/register"} style={{ textDecoration: "none" }}>
+              <button style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "14px 36px",
+                background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
+                color: "#fff",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 700,
+                fontSize: 14.5,
+                border: "none",
+                borderRadius: 12,
+                boxShadow: "0 6px 20px rgba(229, 57, 53, 0.3)",
+                cursor: "pointer",
+                transition: "all 0.25s ease",
+                letterSpacing: "0.02em"
+              }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.45)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.3)"; }}
+              >
+                JOIN AS PARTNER NOW
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -496,6 +526,9 @@ const Partners = () => {
         @media(max-width:560px){
           .partner-services-grid {
             grid-template-columns: 1fr !important;
+          }
+          .cta-glass-card {
+            padding: 32px 20px !important;
           }
         }
       `}</style>
