@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
@@ -14,6 +15,7 @@ const gradients = [
 
 const ServicesSection = () => {
   const { tenantId } = useAuth();
+  const navigate = useNavigate();
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
 
@@ -86,6 +88,7 @@ const ServicesSection = () => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -20 }}
                 transition={{ duration: 0.4 }}
+                onClick={() => navigate(`/services/${s.id || s.slug}`)}
                 style={{
                   background: s.bg,
                   border: `1px solid ${s.accent}22`,
@@ -102,26 +105,88 @@ const ServicesSection = () => {
                   boxShadow: `0 16px 48px rgba(0,0,0,0.7), 0 0 30px ${s.accent}25` 
                 }}
               >
-                {/* Vector Icon bg */}
-                <div style={{ position: "absolute", top: 24, left: 24, width: 44, height: 44, color: "#fff", opacity: 0.25 }}>
-                  {renderServiceIcon(s.icon, { size: 40 })}
+                {/* Premium Glass Container for Logo/Icon */}
+                <div style={{
+                  position: "absolute",
+                  top: 20,
+                  left: 20,
+                  height: 40,
+                  padding: "6px 12px",
+                  background: "rgba(255, 255, 255, 0.08)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 2,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+                }}>
+                  {renderServiceIcon(s.icon, {
+                    height: "22px",
+                    width: "auto",
+                    color: s.accent,
+                    objectFit: "contain",
+                    opacity: 1
+                  })}
+                </div>
+
+                {/* Category Pill Tag */}
+                <div style={{
+                  position: "absolute",
+                  top: 20,
+                  right: 20,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  padding: "5px 10px",
+                  borderRadius: 20,
+                  background: "rgba(255, 255, 255, 0.06)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  color: "rgba(255, 255, 255, 0.8)",
+                  zIndex: 2
+                }}>
+                  {s.category || "API"}
                 </div>
 
                 {/* Radial glow */}
                 <div style={{ position: "absolute", top: 0, right: 0, width: "60%", height: "60%", background: `radial-gradient(circle at top right, ${s.accent}18, transparent 70%)`, pointerEvents: "none" }} />
 
-                {/* Bottom content */}
+                {/* Bottom content with Description */}
                 <div style={{
-                  background: "linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)",
-                  padding: "32px 22px 24px",
+                  background: "linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)",
+                  padding: "40px 22px 24px",
+                  width: "100%",
+                  boxSizing: "border-box",
+                  zIndex: 1
                 }}>
                   <h3 style={{
                     fontFamily: "'Outfit',sans-serif", fontWeight: 800,
-                    fontSize: 16, color: "#fff", lineHeight: 1.35,
-                    textShadow: "0 2px 8px rgba(0,0,0,0.8)",
+                    fontSize: 17, color: "#fff", lineHeight: 1.3,
+                    textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                    margin: 0
                   }}>
                     {s.title}
                   </h3>
+                  {s.description && (
+                    <p style={{
+                      fontSize: 12,
+                      color: "#c9a8b4",
+                      marginTop: 8,
+                      lineHeight: 1.45,
+                      opacity: 0.85,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginBottom: 0
+                    }}>
+                      {s.description}
+                    </p>
+                  )}
                 </div>
               </motion.div>
             ))}

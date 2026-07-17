@@ -26,6 +26,7 @@ const Navbar = () => {
   const [servicesMenu, setServicesMenu] = useState(false);
   const [solutionsMenu, setSolutionsMenu] = useState(false);
   const [solutionsList, setSolutionsList] = useState([]);
+  const [servicesList, setServicesList] = useState([]);
   const [dynamicServices, setDynamicServices] = useState(serviceCategories);
   const { pathname } = useLocation();
   const navigate     = useNavigate();
@@ -36,9 +37,11 @@ const Navbar = () => {
       try {
         const data = await getCollection(tenantId, "services");
         if (data && data.length > 0) {
+          const activeServices = data.filter(item => item.active !== false).sort((a, b) => (a.order || 0) - (b.order || 0));
+          setServicesList(activeServices);
+
           const grouped = { api: [], banking: [], development: [] };
-          data.forEach(item => {
-            if (item.active === false) return;
+          activeServices.forEach(item => {
             const cat = (item.category || "api").toLowerCase();
             if (grouped[cat]) {
               grouped[cat].push({
@@ -61,6 +64,18 @@ const Navbar = () => {
           });
         } else {
           setDynamicServices(serviceCategories);
+          const staticList = [];
+          Object.keys(serviceCategories).forEach(catKey => {
+            serviceCategories[catKey].items.forEach(item => {
+              staticList.push({
+                id: item.slug,
+                title: item.title,
+                icon: item.icon,
+                category: catKey
+              });
+            });
+          });
+          setServicesList(staticList);
         }
       } catch (err) {
         console.error(err);
@@ -173,69 +188,134 @@ const Navbar = () => {
                         paddingTop: 14,
                         zIndex: 1000
                       }}>
-                        <div style={{
-                          background: "#0c0509",
-                          border: "1px solid rgba(229,57,53,0.22)",
-                          borderRadius: 20,
-                          padding: "32px 36px",
-                          width: 860,
-                          display: "grid",
-                          gridTemplateColumns: "repeat(3, 1fr)",
-                          gap: 28,
-                          boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(229,57,53,0.06)",
-                          animation: "fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) both"
-                        }}>
-                          {Object.keys(dynamicServices).map(catKey => {
-                            const cat = dynamicServices[catKey];
-                            return (
-                              <div key={catKey}>
-                                <h4 style={{
-                                  fontSize: 13,
-                                  fontWeight: 800,
-                                  color: "var(--red-light)",
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.06em",
-                                  marginBottom: 16,
-                                  borderBottom: "1px solid rgba(255,255,255,0.05)",
-                                  paddingBottom: 6
+                        {servicesList.length <= 6 ? (
+                          /* Compact dropdown list (e.g. 3 services created by the user) */
+                          <div style={{
+                            background: "#0c0509",
+                            border: "1px solid rgba(229,57,53,0.22)",
+                            borderRadius: 20,
+                            padding: "16px",
+                            width: 320,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 8,
+                            boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(229,57,53,0.06)",
+                            animation: "fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) both",
+                            boxSizing: "border-box"
+                          }}>
+                            {servicesList.map((item, idx) => (
+                              <Link
+                                key={idx}
+                                to={`/services/${item.id || item.slug}`}
+                                onClick={() => setServicesMenu(false)}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 12,
+                                  padding: "8px 12px",
+                                  borderRadius: 12,
+                                  color: "var(--text-secondary)",
+                                  textDecoration: "none",
+                                  transition: "all 0.2s ease"
+                                }}
+                                onMouseEnter={e => {
+                                  e.currentTarget.style.color = "#fff";
+                                  e.currentTarget.style.background = "rgba(229,57,53,0.08)";
+                                }}
+                                onMouseLeave={e => {
+                                  e.currentTarget.style.color = "var(--text-secondary)";
+                                  e.currentTarget.style.background = "transparent";
+                                }}
+                              >
+                                <div style={{ 
+                                  width: 28, 
+                                  height: 28, 
+                                  borderRadius: 8, 
+                                  background: "rgba(255,255,255,0.05)", 
+                                  display: "flex", 
+                                  alignItems: "center", 
+                                  justifyContent: "center",
+                                  flexShrink: 0
                                 }}>
-                                  {cat.title}
-                                </h4>
-                                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                                  {cat.items.map((item, idx) => (
-                                    <Link
-                                      key={idx}
-                                      to={`/services/${item.slug}`}
-                                      onClick={() => setServicesMenu(false)}
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 8,
-                                        fontSize: 13.5,
-                                        color: "var(--text-secondary)",
-                                        textDecoration: "none",
-                                        transition: "all 0.2s ease"
-                                      }}
-                                      onMouseEnter={e => {
-                                        e.currentTarget.style.color = "#fff";
-                                        e.currentTarget.style.paddingLeft = "4px";
-                                      }}
-                                      onMouseLeave={e => {
-                                        e.currentTarget.style.color = "var(--text-secondary)";
-                                        e.currentTarget.style.paddingLeft = "0";
-                                      }}
-                                    >
-                                      <span style={{ width: 14, height: 14, color: "var(--red-light)", display: "flex", alignItems: "center" }}>
-                                        {renderServiceIcon(item.icon, { size: 14 })}
-                                      </span>
-                                      <span>{item.title}</span>
-                                    </Link>
-                                  ))}
+                                  {renderServiceIcon(item.icon, { size: 14, height: "14px", width: "auto" })}
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                                <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                                  <span style={{ fontSize: 13.5, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                    {item.title}
+                                  </span>
+                                  <span style={{ fontSize: 10, color: "var(--red-light)", textTransform: "uppercase", letterSpacing: "0.04em", marginTop: 2 }}>
+                                    {item.category || "API"}
+                                  </span>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        ) : (
+                          /* Large megamenu dropdown list */
+                          <div style={{
+                            background: "#0c0509",
+                            border: "1px solid rgba(229,57,53,0.22)",
+                            borderRadius: 20,
+                            padding: "32px 36px",
+                            width: 860,
+                            display: "grid",
+                            gridTemplateColumns: "repeat(3, 1fr)",
+                            gap: 28,
+                            boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(229,57,53,0.06)",
+                            animation: "fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) both"
+                          }}>
+                            {Object.keys(dynamicServices).map(catKey => {
+                              const cat = dynamicServices[catKey];
+                              return (
+                                <div key={catKey}>
+                                  <h4 style={{
+                                    fontSize: 13,
+                                    fontWeight: 800,
+                                    color: "var(--red-light)",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.06em",
+                                    marginBottom: 16,
+                                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                                    paddingBottom: 6
+                                  }}>
+                                    {cat.title}
+                                  </h4>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                                    {cat.items.map((item, idx) => (
+                                      <Link
+                                        key={idx}
+                                        to={`/services/${item.slug}`}
+                                        onClick={() => setServicesMenu(false)}
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: 8,
+                                          fontSize: 13.5,
+                                          color: "var(--text-secondary)",
+                                          textDecoration: "none",
+                                          transition: "all 0.2s ease"
+                                        }}
+                                        onMouseEnter={e => {
+                                          e.currentTarget.style.color = "#fff";
+                                          e.currentTarget.style.paddingLeft = "4px";
+                                        }}
+                                        onMouseLeave={e => {
+                                          e.currentTarget.style.color = "var(--text-secondary)";
+                                          e.currentTarget.style.paddingLeft = "0";
+                                        }}
+                                      >
+                                        <span style={{ width: 14, height: 14, color: "var(--red-light)", display: "flex", alignItems: "center" }}>
+                                          {renderServiceIcon(item.icon, { size: 14 })}
+                                        </span>
+                                        <span>{item.title}</span>
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     )}
                   </li>
