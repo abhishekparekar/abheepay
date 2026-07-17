@@ -44,52 +44,28 @@ export const renderIcon = (iconValue, size = 22, color = "#e53935") => {
 const IconPicker = ({ value, onChange }) => {
   const [search, setSearch] = useState("");
 
-  const isImage = value && (value.startsWith("data:") || value.startsWith("http") || value.startsWith("/"));
   const filtered = Object.keys(ICON_MAP).filter(k =>
     k.toLowerCase().includes(search.toLowerCase().replace("fi", "").trim())
   );
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => onChange(reader.result);
-    reader.readAsDataURL(file);
-  };
 
   return (
     <div style={{ border: "1.5px solid rgba(0,0,0,0.1)", borderRadius: 12, overflow: "hidden", background: "#f9fafb" }}>
 
       {/* Current selection preview */}
-      <div style={{ padding: "12px 14px", borderBottom: "1px solid rgba(0,0,0,0.07)", display: "flex", alignItems: "center", gap: 12, background: "#fff" }}>
+      <div style={{ padding: "10px 14px", borderBottom: "1px solid rgba(0,0,0,0.07)", display: "flex", alignItems: "center", gap: 12, background: "#fff" }}>
         <div style={{
-          width: 40, height: 40, borderRadius: 10,
+          width: 36, height: 36, borderRadius: 8,
           background: "rgba(229,57,53,0.08)", border: "1px solid rgba(229,57,53,0.15)",
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0
         }}>
-          {renderIcon(value, 20, "#e53935")}
+          {renderIcon(value, 18, "#e53935")}
         </div>
         <div>
-          <div style={{ fontSize: 11, color: "#77676c", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Selected Icon</div>
+          <div style={{ fontSize: 10.5, color: "#77676c", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Selected</div>
           <div style={{ fontSize: 13, color: "#0c0509", fontWeight: 500, marginTop: 1 }}>
-            {isImage ? "Custom Image" : (value || "None selected")}
+            {value || "None selected"}
           </div>
         </div>
-        {isImage && (
-          <button type="button" onClick={() => onChange("FiCpu")} style={{ marginLeft: "auto", fontSize: 11, color: "#e53935", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-            Remove Image
-          </button>
-        )}
-      </div>
-
-      {/* Upload image option */}
-      <div style={{ padding: "10px 14px", borderBottom: "1px solid rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 10, background: "#fff" }}>
-        <span style={{ fontSize: 12, color: "#524449", fontWeight: 600, flexShrink: 0 }}>📎 Upload Image:</span>
-        <input
-          type="file" accept="image/*"
-          onChange={handleFileUpload}
-          style={{ fontSize: 12.5, color: "#524449", flex: 1, cursor: "pointer" }}
-        />
       </div>
 
       {/* Search */}
