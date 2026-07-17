@@ -27,7 +27,15 @@ const About = () => {
 
   const totalPages = Math.ceil(partners.length / PAGE_SIZE);
   const visiblePartners = partners.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
-  const marqueePartners = [...partners, ...partners, ...partners];
+  
+  let baseList = [];
+  if (partners.length > 0) {
+    const repeatCount = Math.ceil(10 / partners.length);
+    for (let i = 0; i < repeatCount; i++) {
+      baseList.push(...partners);
+    }
+  }
+  const marqueePartners = [...baseList, ...baseList];
 
   return (
     <>
@@ -514,7 +522,7 @@ const About = () => {
 
       {/* Section 5: Strategic Partnerships (Automatic Left Scrolling Marquee) */}
       <section style={{
-        padding: "64px 0",
+        padding: "40px 0 48px",
         background: "#f8f9fa",
         color: "#0c0509",
         textAlign: "center",
@@ -522,7 +530,7 @@ const About = () => {
       }}>
         <div style={{ position: "relative" }}>
           {/* Header */}
-          <div style={{ marginBottom: 36, padding: "0 24px" }}>
+          <div style={{ marginBottom: 20, padding: "0 24px" }}>
             <span style={{
               fontSize: 11,
               fontWeight: 800,
@@ -645,7 +653,7 @@ const About = () => {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-33.333%);
+            transform: translateX(-50%);
           }
         }
         @media(max-width:960px){
