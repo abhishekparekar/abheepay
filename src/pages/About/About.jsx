@@ -27,6 +27,7 @@ const About = () => {
 
   const totalPages = Math.ceil(partners.length / PAGE_SIZE);
   const visiblePartners = partners.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const marqueePartners = [...partners, ...partners, ...partners];
 
   return (
     <>
