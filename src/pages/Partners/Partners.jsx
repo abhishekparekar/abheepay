@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import { FiArrowRight, FiCheckCircle, FiDollarSign, FiShield, FiHeadphones, FiTrendingUp } from "react-icons/fi";
 import { fetchServices } from "../../services/serviceService";
 import { renderServiceIcon } from "../../utils/iconHelper";
 
@@ -19,10 +19,10 @@ const partnerServicesList = [
 ];
 
 const benefitsList = [
-  { title: "0 investment business", icon: "$", color: "#e53935" },
-  { title: "simple joining process", icon: "🛡️", color: "#f4511e" },
-  { title: "24*7 customer service", icon: "🎧", color: "#d81b60" },
-  { title: "Earn upto ₹4 Lakh to ₹12 Lakh per annum", icon: "₹", color: "#e53935" }
+  { title: "0 investment business", icon: FiDollarSign, color: "#e53935" },
+  { title: "simple joining process", icon: FiShield, color: "#f4511e" },
+  { title: "24*7 customer service", icon: FiHeadphones, color: "#d81b60" },
+  { title: "Earn upto ₹4 Lakh to ₹12 Lakh per annum", icon: FiTrendingUp, color: "#e53935", badge: "High Income" }
 ];
 
 const Partners = () => {
@@ -257,7 +257,7 @@ const Partners = () => {
 
     {/* Section 3: SiD Pay Benefits (Exactly matching screenshot AAPKA BUSINESS HUMARA INVESTMENT) */}
     <section style={{
-      padding: "80px 24px 96px",
+      padding: "64px 24px 72px",
       background: "#0c0509",
       color: "#f8f0f2",
       textAlign: "center",
@@ -265,13 +265,19 @@ const Partners = () => {
     }}>
       <div className="container">
         {/* Header */}
-        <div style={{ marginBottom: 48 }}>
+        <div style={{ marginBottom: 36 }}>
           <span style={{
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: 800,
-            color: "var(--red-light)",
+            color: "#ffffff",
+            background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
             textTransform: "uppercase",
-            letterSpacing: "0.1em"
+            letterSpacing: "0.08em",
+            padding: "6px 16px",
+            borderRadius: 20,
+            display: "inline-block",
+            boxShadow: "0 4px 12px rgba(229,57,53,0.25)",
+            marginBottom: 14
           }}>
             AAPKA BUSINESS HUMARA INVESTMENT
           </span>
@@ -280,7 +286,7 @@ const Partners = () => {
             fontWeight: 900,
             fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
             letterSpacing: "-0.01em",
-            marginTop: 8,
+            marginTop: 4,
             color: "#fff"
           }}>
             SiD Pay Benefits
@@ -293,60 +299,83 @@ const Partners = () => {
           gridTemplateColumns: "repeat(4, 1fr)",
           gap: 20
         }} className="benefits-grid">
-          {benefitsList.map((item, idx) => (
-            <div key={idx} style={{
-              background: "rgba(255, 255, 255, 0.025)",
-              border: "1px solid rgba(255,255,255,0.05)",
-              borderRadius: 18,
-              padding: "36px 24px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              minHeight: 180,
-              transition: "all 0.28s ease"
-            }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "rgba(229, 57, 53, 0.06)";
-                e.currentTarget.style.borderColor = "rgba(229, 57, 53, 0.25)";
-                e.currentTarget.style.transform = "translateY(-4px)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "rgba(255, 255, 255, 0.025)";
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)";
-                e.currentTarget.style.transform = "none";
-              }}
-            >
-              {/* Icon */}
-              <div style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(229, 57, 53, 0.08)",
+          {benefitsList.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div key={idx} style={{
+                background: item.badge ? "rgba(229, 57, 53, 0.04)" : "rgba(255, 255, 255, 0.025)",
+                border: item.badge ? "1.5px solid rgba(229, 57, 53, 0.25)" : "1px solid rgba(255,255,255,0.05)",
+                borderRadius: 20,
+                padding: "28px 20px",
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 22,
-                color: "var(--red-light)",
-                marginBottom: 20
-              }}>
-                {item.icon}
-              </div>
+                textAlign: "center",
+                minHeight: 160,
+                position: "relative",
+                transition: "all 0.28s ease"
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = "rgba(229, 57, 53, 0.07)";
+                  e.currentTarget.style.borderColor = "rgba(229, 57, 53, 0.4)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = item.badge ? "rgba(229, 57, 53, 0.04)" : "rgba(255, 255, 255, 0.025)";
+                  e.currentTarget.style.borderColor = item.badge ? "rgba(229, 57, 53, 0.25)" : "rgba(255,255,255,0.05)";
+                  e.currentTarget.style.transform = "none";
+                }}
+              >
+                {/* Floating Highlight tag */}
+                {item.badge && (
+                  <span style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    fontSize: 8.5,
+                    fontWeight: 800,
+                    background: "rgba(229,57,53,0.18)",
+                    border: "1px solid rgba(229,57,53,0.35)",
+                    color: "#ff8a80",
+                    padding: "2px 8px",
+                    borderRadius: 8,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em"
+                  }}>
+                    {item.badge}
+                  </span>
+                )}
 
-              {/* Title */}
-              <h3 style={{
-                fontFamily: "'Outfit',sans-serif",
-                fontWeight: 700,
-                fontSize: 14.5,
-                lineHeight: 1.45,
-                color: "#f8f0f2",
-                margin: 0
-              }}>
-                {item.title}
-              </h3>
-            </div>
-          ))}
+                {/* Icon Circle */}
+                <div style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: "50%",
+                  background: item.badge ? "rgba(229, 57, 53, 0.15)" : "rgba(229, 57, 53, 0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#ef5350",
+                  marginBottom: 16
+                }}>
+                  <Icon size={20} />
+                </div>
+
+                {/* Title */}
+                <h3 style={{
+                  fontFamily: "'Outfit',sans-serif",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  lineHeight: 1.4,
+                  color: "#f8f0f2",
+                  margin: 0
+                }}>
+                  {item.title}
+                </h3>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
