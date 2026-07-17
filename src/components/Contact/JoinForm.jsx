@@ -38,7 +38,7 @@ const JoinForm = () => {
 
   return (
     <section style={{
-      padding: "96px 0",
+      padding: "44px 0 60px",
       background: "linear-gradient(135deg, #ffffff 0%, #f4f7f6 100%)",
       color: "#0c0509",
       position: "relative",

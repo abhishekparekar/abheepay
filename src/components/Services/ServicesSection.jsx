@@ -31,7 +31,7 @@ const ServicesSection = () => {
 
   return (
     <section style={{
-      padding: "var(--section-py) 0",
+      padding: "52px 0 36px",
       background: "linear-gradient(180deg, #ffffff 0%, #f4f7f6 100%)",
       position: "relative",
       overflow: "hidden",

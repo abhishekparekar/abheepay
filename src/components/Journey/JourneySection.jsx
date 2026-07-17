@@ -29,7 +29,7 @@ const stepVariants = {
 const JourneySection = () => {
   return (
     <section style={{
-      padding: "var(--section-py) 0",
+      padding: "44px 0 44px",
       background: "linear-gradient(180deg, #ffffff 0%, #f4f7f6 100%)",
       color: "#0c0509",
       position: "relative",
