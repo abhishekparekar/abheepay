@@ -15,12 +15,23 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+let db;
+let auth;
+let analytics;
 
-// Initialize services
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-export const analytics = getAnalytics(app);
+try {
+  if (firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    auth = getAuth(app);
+    analytics = getAnalytics(app);
+  } else {
+    console.warn("Firebase configuration keys are missing. Please add VITE_FIREBASE_* environment variables to your deployment environment (e.g. Vercel dashboard).");
+  }
+} catch (error) {
+  console.error("Firebase failed to initialize:", error);
+}
 
+export { db, auth, analytics };
 export default app;

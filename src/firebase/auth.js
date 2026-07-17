@@ -58,6 +58,9 @@ export const logoutUser = () => signOut(auth);
 export const resetPassword = (email) => sendPasswordResetEmail(auth, email);
 
 // ─── Auth State Listener ─────────────────────────────────────────────────────
-export const onAuthChange = (callback) => onAuthStateChanged(auth, callback);
+export const onAuthChange = (callback) => {
+  if (!auth) return () => {};
+  return onAuthStateChanged(auth, callback);
+};
 
 export { auth };
