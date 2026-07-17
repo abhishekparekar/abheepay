@@ -63,7 +63,7 @@ const Partners = () => {
 
       {/* Section 1: Light Theme Hero Block */}
       <section style={{
-        padding: "130px 24px 64px",
+        padding: "76px 24px 48px",
         background: "#ffffff",
         color: "#080306",
         textAlign: "center",
