@@ -405,7 +405,18 @@ const Navbar = () => {
                                   e.currentTarget.style.background = "transparent";
                                 }}
                               >
-                                <span>{item.icon}</span>
+                                <div style={{ 
+                                  width: 22, 
+                                  height: 22, 
+                                  borderRadius: 6, 
+                                  background: "rgba(255,255,255,0.05)", 
+                                  display: "flex", 
+                                  alignItems: "center", 
+                                  justifyContent: "center",
+                                  flexShrink: 0
+                                }}>
+                                  {renderServiceIcon(item.icon, { size: 12, height: "12px", width: "auto" })}
+                                </div>
                                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</span>
                               </Link>
                             ))
