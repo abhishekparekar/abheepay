@@ -302,7 +302,7 @@ const Hero = () => {
         </div>
       </div> {/* Closes container */}
 
-      {/* ── Stats Belt (Height same as Navbar - 64px - Loop Running Right) ── */}
+      {/* ── Stats Belt (Seamless infinite horizontal scrolling - scroller to the left) ── */}
       <div className="stats-belt" style={{
         background: "#110709",
         borderTop: "1px solid rgba(255, 255, 255, 0.06)",
@@ -318,16 +318,15 @@ const Hero = () => {
         {/* Track Container */}
         <div style={{
           display: "flex",
-          width: "200%",
+          width: "max-content",
           height: "100%",
-          animation: "marqueeRight 14s linear infinite"
+          animation: "marqueeLeft 18s linear infinite"
         }} className="stats-marquee-track">
           
           {/* Set 1 */}
-          <div style={{ display: "flex", width: "50%", height: "100%", justifyContent: "space-around" }}>
+          <div style={{ display: "flex", height: "100%" }}>
             {stats.map(({ icon: Icon, value, label }, i) => (
               <div key={`set1-${i}`} className="stat-card" style={{
-                flex: 1,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -336,7 +335,9 @@ const Hero = () => {
                 position: "relative",
                 overflow: "hidden",
                 cursor: "pointer",
-                minWidth: 160
+                padding: "0 40px",
+                width: 240,
+                boxSizing: "border-box"
               }}>
                 <div className="stat-card-content" style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ color: "#e53935", display: "flex", alignItems: "center" }}>
@@ -355,10 +356,9 @@ const Hero = () => {
           </div>
 
           {/* Set 2 (Seamless loop) */}
-          <div style={{ display: "flex", width: "50%", height: "100%", justifyContent: "space-around" }}>
+          <div style={{ display: "flex", height: "100%" }}>
             {stats.map(({ icon: Icon, value, label }, i) => (
               <div key={`set2-${i}`} className="stat-card" style={{
-                flex: 1,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -367,7 +367,9 @@ const Hero = () => {
                 position: "relative",
                 overflow: "hidden",
                 cursor: "pointer",
-                minWidth: 160
+                padding: "0 40px",
+                width: 240,
+                boxSizing: "border-box"
               }}>
                 <div className="stat-card-content" style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ color: "#e53935", display: "flex", alignItems: "center" }}>
@@ -407,12 +409,12 @@ const Hero = () => {
           position: relative;
           z-index: 1;
         }
-        @keyframes marqueeRight {
+        @keyframes marqueeLeft {
           0% {
-            transform: translateX(-50%);
+            transform: translateX(0);
           }
           100% {
-            transform: translateX(0);
+            transform: translateX(-50%);
           }
         }
         @media(max-width:900px){
@@ -425,12 +427,6 @@ const Hero = () => {
           }
           .hero-main-grid{grid-template-columns:1fr!important; gap: 32px!important;}
           .hero-main-grid>div:last-child{display:none!important;}
-        }
-        @media(max-width:560px){
-          .stats-row{grid-template-columns:repeat(2,1fr)!important;}
-          .stats-row>div:nth-child(2){border-right:none!important;}
-          .stats-row>div:nth-child(3){border-right:1px solid rgba(255, 255, 255, 0.06)!important;}
-          .stats-row>div:nth-child(1),.stats-row>div:nth-child(2){border-bottom:1px solid rgba(255, 255, 255, 0.06)!important;}
         }
       `}</style>
     </section>

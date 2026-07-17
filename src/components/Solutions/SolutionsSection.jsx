@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { FiZap, FiCheckCircle, FiLock, FiBarChart2, FiMonitor, FiShield, FiCode, FiHeadphones } from "react-icons/fi";
 
 const features = [
@@ -13,170 +12,194 @@ const features = [
   { icon: FiHeadphones, title: "Dedicated Support",   desc: "24×7 expert support team ready to assist you." },
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.05,
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  })
-};
+const SolutionsSection = () => {
+  // Double features array for seamless marquee loop
+  const marqueeItems = [...features, ...features];
 
-const SolutionsSection = () => (
-  <section style={{
-    padding: "96px 0",
-    background: "linear-gradient(135deg, #fff3f4 0%, #ffffff 100%)",
-    color: "#0c0509",
-    position: "relative",
-    overflow: "hidden"
-  }}>
-    {/* Subtle gradient orb */}
-    <div style={{
-      position: "absolute",
-      bottom: -150,
-      right: -100,
-      width: 450,
-      height: 450,
-      background: "radial-gradient(circle, rgba(229,57,53,0.03) 0%, transparent 70%)",
-      pointerEvents: "none"
-    }} />
-
-    <div className="container" style={{ position: "relative", zIndex: 1 }}>
-      
-      {/* Title Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
-        style={{ textAlign: "center", marginBottom: 60 }}
-      >
-        <h2 style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontWeight: 900,
-          fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)",
-          color: "#0c0509",
-          letterSpacing: "-0.02em",
-          marginBottom: 14,
-          marginTop: 0
-        }}>
-          Why Businesses Trust{" "}
-          <span style={{
-            background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text"
-          }}>
-            SiD Pay
-          </span>
-        </h2>
-        <p style={{ color: "#524449", fontSize: 16, maxWidth: 520, margin: "0 auto" }}>
-          Built for reliability, security, and speed — everything your business needs to grow.
-        </p>
-      </motion.div>
-
-      {/* Feature Cards Grid (4x2 on PC, 2x4 on Tablet, 1x8 on Mobile) */}
+  return (
+    <section style={{
+      padding: "96px 0",
+      background: "linear-gradient(135deg, #fff3f4 0%, #ffffff 100%)",
+      color: "#0c0509",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      {/* Subtle gradient orb */}
       <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gap: 20
-      }} className="trust-grid">
-        {features.map(({ icon: Icon, title, desc }, idx) => (
-          <motion.div
-            key={idx}
-            custom={idx}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={cardVariants}
-            style={{
-              background: "#ffffff",
-              border: "1px solid rgba(0, 0, 0, 0.04)",
-              borderRadius: 24,
-              padding: "40px 28px 48px",
-              textAlign: "center",
-              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.02)",
-              position: "relative",
-              overflow: "hidden",
-              transition: "transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease"
-            }}
-            className="trust-card"
-            whileHover={{
-              y: -4,
-              borderColor: "rgba(229, 57, 53, 0.15)",
-              boxShadow: "0 12px 36px rgba(229, 57, 53, 0.05)"
-            }}
-          >
-            {/* Round Icon container */}
-            <div style={{
-              width: 50,
-              height: 50,
-              borderRadius: "50%",
-              background: "rgba(229,57,53,0.06)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 20px"
+        position: "absolute",
+        bottom: -150,
+        right: -100,
+        width: 450,
+        height: 450,
+        background: "radial-gradient(circle, rgba(229,57,53,0.03) 0%, transparent 70%)",
+        pointerEvents: "none"
+      }} />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        
+        {/* Title Header */}
+        <div style={{ textAlign: "center", marginBottom: 56, padding: "0 24px" }}>
+          <h2 style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontWeight: 900,
+            fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)",
+            color: "#0c0509",
+            letterSpacing: "-0.02em",
+            marginBottom: 14,
+            marginTop: 0
+          }}>
+            Why Businesses Trust{" "}
+            <span style={{
+              background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text"
             }}>
-              <Icon size={20} style={{ color: "#e53935" }} />
-            </div>
+              SiD Pay
+            </span>
+          </h2>
+          <p style={{ color: "#524449", fontSize: 16, maxWidth: 520, margin: "0 auto" }}>
+            Built for reliability, security, and speed — everything your business needs to grow.
+          </p>
+        </div>
 
-            {/* Headline */}
-            <h3 style={{
-              fontFamily: "'Outfit', sans-serif",
-              fontWeight: 700,
-              fontSize: 16.5,
-              color: "#0c0509",
-              marginBottom: 10,
-              marginTop: 0
-            }}>
-              {title}
-            </h3>
+        {/* Seamless automatic scroller wrapper */}
+        <div style={{
+          width: "100%",
+          overflow: "hidden",
+          position: "relative",
+          padding: "10px 0"
+        }} className="trust-marquee-container">
+          
+          {/* Gradient Fades on edges for premium visual blend */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 100,
+            height: "100%",
+            background: "linear-gradient(90deg, #fff3f4 0%, transparent 100%)",
+            zIndex: 3,
+            pointerEvents: "none"
+          }} className="fade-left" />
+          
+          <div style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 100,
+            height: "100%",
+            background: "linear-gradient(-90deg, #ffffff 0%, transparent 100%)",
+            zIndex: 3,
+            pointerEvents: "none"
+          }} className="fade-right" />
 
-            {/* Description */}
-            <p style={{
-              color: "#524449",
-              fontSize: 13,
-              lineHeight: 1.6,
-              margin: 0
-            }}>
-              {desc}
-            </p>
+          {/* Scrolling Track */}
+          <div style={{
+            display: "flex",
+            width: "max-content",
+            animation: "trustMarquee 36s linear infinite"
+          }} className="trust-marquee-track">
+            {marqueeItems.map(({ icon: Icon, title, desc }, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid rgba(0, 0, 0, 0.04)",
+                  borderRadius: 24,
+                  padding: "36px 24px",
+                  textAlign: "center",
+                  boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
+                  position: "relative",
+                  overflow: "hidden",
+                  width: 290,
+                  height: 250,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  marginRight: 24,
+                  flexShrink: 0,
+                  boxSizing: "border-box",
+                  transition: "transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease"
+                }}
+                className="trust-card"
+              >
+                {/* Round Icon container */}
+                <div style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "50%",
+                  background: "rgba(229,57,53,0.06)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 16
+                }}>
+                  <Icon size={20} style={{ color: "#e53935" }} />
+                </div>
 
-            {/* Accent Line - Bottom Left indicator exactly as screenshot */}
-            <div style={{
-              position: "absolute",
-              bottom: 18,
-              left: 28,
-              width: 28,
-              height: 3,
-              background: "#e53935",
-              borderRadius: 2
-            }} />
+                {/* Headline */}
+                <h3 style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: "#0c0509",
+                  marginBottom: 8,
+                  marginTop: 0
+                }}>
+                  {title}
+                </h3>
 
-          </motion.div>
-        ))}
+                {/* Description */}
+                <p style={{
+                  color: "#524449",
+                  fontSize: 12.5,
+                  lineHeight: 1.55,
+                  margin: 0
+                }}>
+                  {desc}
+                </p>
+
+                {/* Accent Line - Bottom Left indicator exactly as screenshot */}
+                <div style={{
+                  position: "absolute",
+                  bottom: 18,
+                  left: 24,
+                  width: 28,
+                  height: 3,
+                  background: "#e53935",
+                  borderRadius: 2
+                }} />
+
+              </div>
+            ))}
+          </div>
+
+        </div>
+
       </div>
 
-    </div>
-
-    <style>{`
-      @media(max-width:1024px){
-        .trust-grid {
-          grid-template-columns: repeat(2, 1fr) !important;
+      <style>{`
+        .trust-marquee-track:hover {
+          animation-play-state: paused;
         }
-      }
-      @media(max-width:600px){
-        .trust-grid {
-          grid-template-columns: 1fr !important;
+        .trust-card:hover {
+          transform: translateY(-5px);
+          border-color: rgba(229, 57, 53, 0.15) !important;
+          box-shadow: 0 12px 36px rgba(229, 57, 53, 0.05) !important;
         }
-      }
-    `}</style>
-  </section>
-);
+        @keyframes trustMarquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
+    </section>
+  );
+};
 
 export default SolutionsSection;
