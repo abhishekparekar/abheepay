@@ -36,24 +36,35 @@ const About = () => {
 
       {/* Section 1: Header & Main Info (Collage layout) */}
       <section style={{
-        padding: "160px 24px 80px",
+        padding: "96px 24px 48px",
         background: "#ffffff",
         color: "#0c0509",
         position: "relative",
         overflow: "hidden"
       }}>
         <div className="container">
-          {/* Title */}
-          <h1 style={{
-            fontFamily: "'Outfit', sans-serif",
-            fontWeight: 900,
-            fontSize: "clamp(2rem, 5vw, 3.2rem)",
-            letterSpacing: "-0.03em",
-            color: "#0c0509",
-            marginBottom: 60
-          }}>
-            About Us
-          </h1>
+          {/* Header Title */}
+          <div style={{ marginBottom: 36, textAlign: "left" }}>
+            <span style={{
+              fontSize: 12,
+              fontWeight: 800,
+              color: "#e53935",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em"
+            }}>
+              WHO WE ARE
+            </span>
+            <h1 style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontWeight: 900,
+              fontSize: "clamp(2rem, 4vw, 2.8rem)",
+              letterSpacing: "-0.03em",
+              color: "#0c0509",
+              margin: "6px 0 0 0"
+            }}>
+              About SiD Pay
+            </h1>
+          </div>
 
           {/* Flex Split */}
           <div style={{
