@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { FiCheckCircle, FiShoppingBag, FiGlobe, FiUsers, FiLock, FiShield, FiZap, FiUserCheck, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import { fetchPartners } from "../../services/partnerService";
+import { renderServiceIcon } from "../../utils/iconHelper";
 
 const PAGE_SIZE = 6;
 
@@ -510,18 +511,19 @@ const About = () => {
         </div>
       </section>
 
-      {/* Section 5: Strategic Partnerships (Exactly matching layout in screenshot - Light version) */}
+      {/* Section 5: Strategic Partnerships (Automatic Left Scrolling Marquee) */}
       <section style={{
-        padding: "64px 24px",
+        padding: "64px 0",
         background: "#f8f9fa",
         color: "#0c0509",
-        textAlign: "center"
+        textAlign: "center",
+        overflow: "hidden"
       }}>
-        <div className="container">
+        <div style={{ position: "relative" }}>
           {/* Header */}
-          <div style={{ marginBottom: 28 }}>
+          <div style={{ marginBottom: 36, padding: "0 24px" }}>
             <span style={{
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: 800,
               color: "#e53935",
               textTransform: "uppercase",
@@ -535,101 +537,114 @@ const About = () => {
               fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
               color: "#0c0509",
               letterSpacing: "-0.01em",
-              marginTop: 8
+              marginTop: 6,
+              marginBottom: 0
             }}>
               Strategic Partnerships
             </h2>
           </div>
 
-          {/* Partner Cards Grid */}
           {partners.length === 0 ? (
             <div style={{ fontSize: 14, color: "#77676c", padding: "20px 0" }}>
               Loading network partnerships...
             </div>
           ) : (
-            <div>
+            <div style={{
+              width: "100%",
+              overflow: "hidden",
+              position: "relative",
+              padding: "10px 0"
+            }} className="partners-marquee-container">
+              {/* Fade Edges */}
               <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(6, 1fr)",
-                gap: 14,
-                marginBottom: 32
-              }} className="about-partners-grid">
-                {visiblePartners.map((item, idx) => (
-                  <div key={idx} style={{
-                    background: "#ffffff",
-                    border: "1px solid rgba(0,0,0,0.06)",
-                    borderRadius: 14,
-                    padding: "24px 14px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: 100,
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.02)",
-                    transition: "all 0.28s ease"
-                  }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.transform = "translateY(-4px)";
-                      e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.06)";
-                      e.currentTarget.style.borderColor = "rgba(229,57,53,0.15)";
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: 100,
+                height: "100%",
+                background: "linear-gradient(90deg, #f8f9fa 0%, transparent 100%)",
+                zIndex: 3,
+                pointerEvents: "none"
+              }} />
+              <div style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: 100,
+                height: "100%",
+                background: "linear-gradient(-90deg, #f8f9fa 0%, transparent 100%)",
+                zIndex: 3,
+                pointerEvents: "none"
+              }} />
+
+              {/* Marquee Track */}
+              <div style={{
+                display: "flex",
+                width: "max-content",
+                animation: "partnersMarquee 26s linear infinite"
+              }} className="partners-marquee-track">
+                {marqueePartners.map((item, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: "#ffffff",
+                      border: "1px solid rgba(0,0,0,0.06)",
+                      borderRadius: 16,
+                      padding: "12px 20px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      width: 200,
+                      height: 72,
+                      marginRight: 16,
+                      flexShrink: 0,
+                      boxSizing: "border-box",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.01)",
+                      transition: "transform 0.25s ease, border-color 0.25s ease"
                     }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.02)";
-                      e.currentTarget.style.borderColor = "rgba(0,0,0,0.06)";
-                    }}
+                    className="partner-marquee-card"
                   >
-                    <div style={{ fontSize: 26, marginBottom: 8 }}>{item.emoji || "🏢"}</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#2d2427" }}>{item.name}</div>
+                    <div style={{
+                      width: 36,
+                      height: 36,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 8,
+                      background: "rgba(229, 57, 53, 0.05)",
+                      overflow: "hidden",
+                      flexShrink: 0
+                    }}>
+                      {renderServiceIcon(item.logo || item.emoji || "FiBriefcase", { size: 18 })}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#2d2427", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {item.name}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
-
-              {/* Slider Dots indicators */}
-              {totalPages > 1 && (
-                <div style={{ display: "flex", justifyContent: "center", gap: 8, alignItems: "center" }}>
-                  <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} style={{ border: "none", background: "none", cursor: "pointer", color: page === 0 ? "#ccc" : "#e53935", padding: 6 }}>
-                    <FiChevronLeft size={16} />
-                  </button>
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setPage(i)}
-                      style={{
-                        width: i === page ? 16 : 8,
-                        height: 8,
-                        borderRadius: 4,
-                        background: i === page ? "#e53935" : "#ccc",
-                        border: "none",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease"
-                      }}
-                    />
-                  ))}
-                  <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} style={{ border: "none", background: "none", cursor: "pointer", color: page === totalPages - 1 ? "#ccc" : "#e53935", padding: 6 }}>
-                    <FiChevronRight size={16} />
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>
       </section>
 
       <style>{`
-        @media(max-width:1024px){
-          .about-partners-grid {
-            grid-template-columns: repeat(4, 1fr)!important;
-          }
+        .partners-marquee-track:hover {
+          animation-play-state: paused;
         }
-        @media(max-width:768px){
-          .about-partners-grid {
-            grid-template-columns: repeat(3, 1fr)!important;
-          }
+        .partner-marquee-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(229, 57, 53, 0.2) !important;
+          box-shadow: 0 6px 16px rgba(0,0,0,0.04) !important;
         }
-        @media(max-width:480px){
-          .about-partners-grid {
-            grid-template-columns: repeat(2, 1fr)!important;
+        @keyframes partnersMarquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.333%);
           }
         }
         @media(max-width:960px){
