@@ -109,33 +109,40 @@ const PartnerSection = () => {
     return null;
   }
 
-  const totalPages = Math.ceil(partners.length / PAGE_SIZE);
-  const visible = partners.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  let baseList = [];
+  if (partners.length > 0) {
+    const repeatCount = Math.ceil(12 / partners.length);
+    for (let i = 0; i < repeatCount; i++) {
+      baseList.push(...partners);
+    }
+  }
+  const marqueePartners = [...baseList, ...baseList];
 
   return (
     <section style={{
-      padding: "var(--section-py) 0",
+      padding: "48px 0",
       background: "linear-gradient(180deg, #ffffff 0%, #f4f7f6 100%)",
-      color: "#0c0509"
+      color: "#0c0509",
+      overflow: "hidden"
     }}>
-      <div className="container">
+      <div style={{ position: "relative" }}>
         
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
+        <div style={{ textAlign: "center", marginBottom: 32, padding: "0 24px" }}>
           <div style={{
-            fontSize: 11.5,
+            fontSize: 11,
             fontWeight: 700,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             color: "#524449",
-            marginBottom: 12
+            marginBottom: 8
           }}>
             OUR TRUSTED NETWORK
           </div>
           <h2 style={{
             fontFamily: "'Outfit', sans-serif",
             fontWeight: 900,
-            fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
+            fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
             letterSpacing: "-0.02em",
             color: "#0c0509",
             margin: 0
@@ -144,133 +151,111 @@ const PartnerSection = () => {
           </h2>
         </div>
 
-        {/* Partner Cards Grid */}
+        {/* Marquee Container */}
         <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(6, 1fr)",
-          gap: 14,
-          marginBottom: 36
-        }} className="partner-carousel-grid">
-          {visible.map((partner, idx) => (
-            <div
-              key={partner.id || idx}
-              style={{
-                background: "#ffffff",
-                border: "1px solid rgba(0, 0, 0, 0.05)",
-                borderRadius: 16,
-                padding: "24px 16px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                boxShadow: "0 8px 30px rgba(0,0,0,0.015)",
-                transition: "all 0.28s ease",
-                cursor: "pointer",
-                minHeight: 120
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.borderColor = "rgba(229, 57, 53, 0.15)";
-                e.currentTarget.style.boxShadow = "0 12px 30px rgba(229, 57, 53, 0.05)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = "none";
-                e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.05)";
-                e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.015)";
-              }}
-            >
-              {(() => {
-                if (partner.logo && typeof partner.logo === 'object') {
-                  return partner.logo;
-                }
-                if (partner.logo && (partner.logo.startsWith("data:") || partner.logo.startsWith("http") || partner.logo.startsWith("/"))) {
-                  return <img src={partner.logo} alt={partner.name} style={{ width: "100%", maxHeight: 50, objectFit: "contain" }} />;
-                }
-                if (partner.emoji && (partner.emoji.startsWith("data:") || partner.emoji.startsWith("http") || partner.emoji.startsWith("/"))) {
-                  return <img src={partner.emoji} alt={partner.name} style={{ width: "100%", maxHeight: 50, objectFit: "contain" }} />;
-                }
-                const staticMatch = staticPartners.find(sp => sp.id === partner.id);
-                if (staticMatch) {
-                  return staticMatch.logo;
-                }
-                return (
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-                    <FiBriefcase size={28} style={{ color: "#e53935" }} />
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0c0509" }}>{partner.name}</div>
-                  </div>
-                );
-              })()}
-            </div>
-          ))}
+          width: "100%",
+          overflow: "hidden",
+          position: "relative",
+          padding: "12px 0"
+        }} className="partners-marquee-container">
+          
+          {/* Edge Fade Overlays */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 100,
+            height: "100%",
+            background: "linear-gradient(90deg, #ffffff 0%, transparent 100%)",
+            zIndex: 3,
+            pointerEvents: "none"
+          }} />
+          <div style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 100,
+            height: "100%",
+            background: "linear-gradient(-90deg, #f4f7f6 0%, transparent 100%)",
+            zIndex: 3,
+            pointerEvents: "none"
+          }} />
+
+          {/* Marquee Track */}
+          <div style={{
+            display: "flex",
+            width: "max-content",
+            animation: "partnersMarquee 26s linear infinite"
+          }} className="partners-marquee-track">
+            {marqueePartners.map((partner, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid rgba(0, 0, 0, 0.05)",
+                  borderRadius: 14,
+                  width: 170,
+                  height: 76,
+                  marginRight: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "10px 16px",
+                  boxSizing: "border-box",
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.01)",
+                  transition: "transform 0.25s ease, border-color 0.25s ease",
+                  cursor: "pointer",
+                  flexShrink: 0
+                }}
+                className="partner-marquee-card"
+              >
+                {(() => {
+                  if (partner.logo && typeof partner.logo === 'object') {
+                    return partner.logo;
+                  }
+                  if (partner.logo && (partner.logo.startsWith("data:") || partner.logo.startsWith("http") || partner.logo.startsWith("/"))) {
+                    return <img src={partner.logo} alt={partner.name} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />;
+                  }
+                  if (partner.emoji && (partner.emoji.startsWith("data:") || partner.emoji.startsWith("http") || partner.emoji.startsWith("/"))) {
+                    return <img src={partner.emoji} alt={partner.name} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />;
+                  }
+                  const staticMatch = staticPartners.find(sp => sp.id === partner.id);
+                  if (staticMatch) {
+                    return staticMatch.logo;
+                  }
+                  return (
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <FiBriefcase size={18} style={{ color: "#e53935", flexShrink: 0 }} />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#0c0509", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {partner.name}
+                      </span>
+                    </div>
+                  );
+                })()}
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Dots + Arrows Navigation */}
-        {totalPages > 1 && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
-            <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} style={{
-              width: 38,
-              height: 38,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#ffffff",
-              border: "1px solid rgba(229,57,53,0.3)",
-              color: "#e53935",
-              cursor: page === 0 ? "not-allowed" : "pointer",
-              opacity: page === 0 ? 0.4 : 1,
-              transition: "all 0.28s ease"
-            }}>
-              <FiChevronLeft size={17} />
-            </button>
-
-            {/* Dots */}
-            <div style={{ display: "flex", gap: 7 }}>
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i)}
-                  style={{
-                    width: i === page ? 22 : 8,
-                    height: 8,
-                    borderRadius: 4,
-                    background: i === page
-                      ? "linear-gradient(90deg, #e53935, #d81b60)"
-                      : "rgba(0,0,0,0.1)",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease"
-                  }}
-                />
-              ))}
-            </div>
-
-            <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} style={{
-              width: 38,
-              height: 38,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "linear-gradient(135deg, #e53935, #d81b60)",
-              border: "none",
-              color: "#fff",
-              cursor: page === totalPages - 1 ? "not-allowed" : "pointer",
-              opacity: page === totalPages - 1 ? 0.4 : 1,
-              boxShadow: "0 4px 16px rgba(229,57,53,0.3)",
-              transition: "all 0.28s ease"
-            }}>
-              <FiChevronRight size={17} />
-            </button>
-          </div>
-        )}
       </div>
 
       <style>{`
-        @media(max-width:1024px){ .partner-carousel-grid{grid-template-columns:repeat(4,1fr)!important;} }
-        @media(max-width:640px) { .partner-carousel-grid{grid-template-columns:repeat(3,1fr)!important;} }
-        @media(max-width:420px) { .partner-carousel-grid{grid-template-columns:repeat(2,1fr)!important;} }
+        .partners-marquee-track:hover {
+          animation-play-state: paused;
+        }
+        .partner-marquee-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(229, 57, 53, 0.2) !important;
+          box-shadow: 0 6px 16px rgba(0,0,0,0.04) !important;
+        }
+        @keyframes partnersMarquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
       `}</style>
     </section>
   );
