@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import { fetchServices } from "../../services/serviceService";
+import { renderServiceIcon } from "../../utils/iconHelper";
 
 const partnerServicesList = [
   { title: "MATM", subtitle: "Micro ATM Services", icon: "📱", to: "/services/assisted-banking" },
@@ -24,7 +26,31 @@ const benefitsList = [
 ];
 
 const Partners = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, tenantId } = useAuth();
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchServices(tenantId);
+        setServices(data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    load();
+  }, [tenantId]);
+
+  const displayServices = services.length > 0
+    ? services.map(s => ({
+        title: s.title,
+        subtitle: s.description || s.category || "Premium Service",
+        icon: s.icon,
+        to: `/services/${s.id || s.slug}`,
+        isDynamic: true
+      }))
+    : partnerServicesList;
+
   return (
     <>
     <Helmet>
@@ -153,7 +179,7 @@ const Partners = () => {
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: 20
         }} className="partner-services-grid">
-          {partnerServicesList.map((item, idx) => (
+          {displayServices.map((item, idx) => (
             <Link key={idx} to={item.to} style={{ textDecoration: "none" }}>
               <div style={{
                 background: "#ffffff",
@@ -166,7 +192,9 @@ const Partners = () => {
                 textAlign: "left",
                 boxShadow: "0 4px 14px rgba(0,0,0,0.03)",
                 transition: "all 0.28s ease",
-                cursor: "pointer"
+                cursor: "pointer",
+                height: "100%",
+                boxSizing: "border-box"
               }}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = "translateY(-4px)";
@@ -188,10 +216,12 @@ const Partners = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 20,
                   marginBottom: 16
                 }}>
-                  {item.icon}
+                  {item.isDynamic 
+                    ? renderServiceIcon(item.icon, { height: "20px", width: "auto", color: "#e53935", objectFit: "contain" })
+                    : <span style={{ fontSize: 20 }}>{item.icon}</span>
+                  }
                 </div>
 
                 {/* Text Title */}
@@ -209,7 +239,12 @@ const Partners = () => {
                 <p style={{
                   color: "#77676c",
                   fontSize: 12.5,
-                  margin: "6px 0 0 0"
+                  margin: "6px 0 0 0",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis"
                 }}>
                   {item.subtitle}
                 </p>
