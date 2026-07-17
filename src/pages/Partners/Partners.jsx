@@ -416,24 +416,24 @@ const Partners = () => {
         </div>
       </section>
 
-      {/* Section 4: Dark Theme Journey Callout Block */}
+      {/* Section 4: Light Theme Journey Callout Block */}
       <section style={{
         padding: "var(--section-py) 24px",
-        background: "#080306",
-        color: "#f8f0f2",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+        background: "#ffffff",
+        color: "#0c0509",
+        borderTop: "1px solid rgba(0, 0, 0, 0.05)",
         textAlign: "center",
         position: "relative",
         overflow: "hidden"
       }}>
-        {/* Neon glowing backdrops */}
+        {/* Subtle glowing backdrops */}
         <div style={{
           position: "absolute",
           top: "-30%",
           left: "-10%",
           width: 320,
           height: 320,
-          background: "radial-gradient(circle, rgba(229,57,53,0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(229,57,53,0.03) 0%, transparent 70%)",
           pointerEvents: "none",
           filter: "blur(50px)"
         }} />
@@ -443,7 +443,7 @@ const Partners = () => {
           right: "-10%",
           width: 320,
           height: 320,
-          background: "radial-gradient(circle, rgba(216,27,96,0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(216,27,96,0.03) 0%, transparent 70%)",
           pointerEvents: "none",
           filter: "blur(50px)"
         }} />
@@ -453,13 +453,13 @@ const Partners = () => {
             fontWeight: 900,
             fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
             letterSpacing: "-0.01em",
-            color: "#fff",
+            color: "#0c0509",
             marginBottom: 14,
             marginTop: 0
           }}>
             Become Our Partner Today
           </h2>
-          <p style={{ color: "#c9a8b4", maxWidth: 520, margin: "0 auto 28px", fontSize: 15, lineHeight: 1.6 }}>
+          <p style={{ color: "#524449", maxWidth: 520, margin: "0 auto 28px", fontSize: 15, lineHeight: 1.6 }}>
             Empower your merchant network with cutting-edge retail banking, utility payments, and financial API services.
           </p>
 
