@@ -114,7 +114,7 @@ const PartnerSection = () => {
 
   return (
     <section style={{
-      padding: "96px 0",
+      padding: "var(--section-py) 0",
       background: "linear-gradient(180deg, #ffffff 0%, #f4f7f6 100%)",
       color: "#0c0509"
     }}>

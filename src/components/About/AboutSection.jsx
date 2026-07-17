@@ -5,7 +5,7 @@ import { FiCheckCircle, FiArrowRight } from "react-icons/fi";
 
 const AboutSection = () => (
   <section style={{
-    padding: "96px 0",
+    padding: "var(--section-py) 0",
     background: "#ffffff",
     color: "#0c0509",
     position: "relative",

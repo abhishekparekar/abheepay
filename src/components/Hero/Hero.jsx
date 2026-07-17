@@ -261,7 +261,7 @@ const Hero = () => {
               </div>
 
               {/* Floating badges */}
-              <div style={{
+              <div className="hero-floating-badge-1" style={{
                 position: "absolute",
                 top: -14,
                 right: -14,
@@ -278,7 +278,7 @@ const Hero = () => {
               }}>
                 <FiShield size={14} /> 256-bit Encrypted
               </div>
-              <div style={{
+              <div className="hero-floating-badge-2" style={{
                 position: "absolute",
                 bottom: -14,
                 left: -14,
@@ -419,14 +419,27 @@ const Hero = () => {
         }
         @media(max-width:900px){
           .hero-section {
-            padding-top: 76px !important;
-            padding-bottom: 0 !important;
+            padding-top: 106px !important;
+            padding-bottom: 24px !important;
           }
           .stats-belt {
-            margin-top: 24px !important;
+            margin-top: 36px !important;
           }
-          .hero-main-grid{grid-template-columns:1fr!important; gap: 32px!important;}
-          .hero-main-grid>div:last-child{display:none!important;}
+          .hero-main-grid {
+            grid-template-columns: 1fr !important;
+            gap: 48px !important;
+          }
+          .hero-main-grid>div:last-child {
+            display: block !important;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+          }
+        }
+        @media(max-width:480px){
+          .hero-floating-badge-1, .hero-floating-badge-2 {
+            display: none !important;
+          }
         }
       `}</style>
     </section>

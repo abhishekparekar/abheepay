@@ -18,7 +18,7 @@ const SolutionsSection = () => {
 
   return (
     <section style={{
-      padding: "96px 0",
+      padding: "var(--section-py) 0",
       background: "linear-gradient(135deg, #fff3f4 0%, #ffffff 100%)",
       color: "#0c0509",
       position: "relative",

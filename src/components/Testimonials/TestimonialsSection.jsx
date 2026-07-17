@@ -36,7 +36,7 @@ const TestimonialsSection = () => {
 
   return (
     <section style={{
-      padding: "96px 0",
+      padding: "var(--section-py) 0",
       background: "linear-gradient(180deg, #f4f7f6 0%, #ffffff 100%)",
       color: "#0c0509",
       position: "relative",
