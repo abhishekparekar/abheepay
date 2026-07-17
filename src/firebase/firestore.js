@@ -23,14 +23,20 @@ import { db } from "./firebase";
  * Returns the root collection reference for a given tenant.
  * Every data collection lives under  tenants/{tenantId}/{collectionName}
  */
-export const getTenantRef = (tenantId) => doc(db, "tenants", tenantId);
+export const getTenantRef = (tenantId) => {
+  if (!db) return null;
+  return doc(db, "tenants", tenantId);
+};
 
-export const getTenantCollection = (tenantId, collectionName) =>
-  collection(db, "tenants", tenantId, collectionName);
+export const getTenantCollection = (tenantId, collectionName) => {
+  if (!db) return null;
+  return collection(db, "tenants", tenantId, collectionName);
+};
 
 // ─── Tenant Management ───────────────────────────────────────────────────────
 export const createTenant = async (tenantId, tenantData) => {
   const tenantRef = getTenantRef(tenantId);
+  if (!tenantRef) return null;
   await setDoc(tenantRef, {
     ...tenantData,
     createdAt: serverTimestamp(),
@@ -42,18 +48,21 @@ export const createTenant = async (tenantId, tenantData) => {
 
 export const getTenant = async (tenantId) => {
   const tenantRef = getTenantRef(tenantId);
+  if (!tenantRef) return null;
   const snap = await getDoc(tenantRef);
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
 };
 
 export const updateTenant = async (tenantId, data) => {
   const tenantRef = getTenantRef(tenantId);
+  if (!tenantRef) return;
   await updateDoc(tenantRef, { ...data, updatedAt: serverTimestamp() });
 };
 
 // ─── Generic CRUD (tenant-scoped) ────────────────────────────────────────────
 export const addDocument = async (tenantId, collectionName, data) => {
   const colRef = getTenantCollection(tenantId, collectionName);
+  if (!colRef) return null;
   return addDoc(colRef, {
     ...data,
     tenantId,
@@ -63,6 +72,7 @@ export const addDocument = async (tenantId, collectionName, data) => {
 };
 
 export const setDocument = async (tenantId, collectionName, docId, data) => {
+  if (!db) return null;
   const docRef = doc(db, "tenants", tenantId, collectionName, docId);
   await setDoc(docRef, {
     ...data,
@@ -73,6 +83,7 @@ export const setDocument = async (tenantId, collectionName, docId, data) => {
 };
 
 export const getDocument = async (tenantId, collectionName, docId) => {
+  if (!db) return null;
   const docRef = doc(db, "tenants", tenantId, collectionName, docId);
   const snap = await getDoc(docRef);
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;
@@ -80,17 +91,20 @@ export const getDocument = async (tenantId, collectionName, docId) => {
 
 export const getCollection = async (tenantId, collectionName, constraints = []) => {
   const colRef = getTenantCollection(tenantId, collectionName);
+  if (!colRef) return [];
   const q = constraints.length ? query(colRef, ...constraints) : colRef;
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 };
 
 export const updateDocument = async (tenantId, collectionName, docId, data) => {
+  if (!db) return;
   const docRef = doc(db, "tenants", tenantId, collectionName, docId);
   await updateDoc(docRef, { ...data, updatedAt: serverTimestamp() });
 };
 
 export const deleteDocument = async (tenantId, collectionName, docId) => {
+  if (!db) return;
   const docRef = doc(db, "tenants", tenantId, collectionName, docId);
   await deleteDoc(docRef);
 };
@@ -98,6 +112,7 @@ export const deleteDocument = async (tenantId, collectionName, docId) => {
 // ─── Real-time listener (tenant-scoped) ─────────────────────────────────────
 export const subscribeToCollection = (tenantId, collectionName, callback, constraints = []) => {
   const colRef = getTenantCollection(tenantId, collectionName);
+  if (!colRef) return () => {};
   const q = constraints.length ? query(colRef, ...constraints) : colRef;
   return onSnapshot(q, (snap) => {
     const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
