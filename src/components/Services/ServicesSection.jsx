@@ -122,15 +122,12 @@ const ServicesSection = () => {
                   background: "#ffffff",
                   border: "1px solid rgba(0, 0, 0, 0.05)",
                   borderRadius: 24,
-                  padding: "32px 24px",
-                  boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
                   position: "relative",
                   overflow: "hidden",
                   width: 290,
-                  height: 250,
+                  height: 270,
                   display: "flex",
                   flexDirection: "column",
-                  justifyContent: "flex-end",
                   marginRight: 24,
                   flexShrink: 0,
                   cursor: "pointer",
@@ -139,107 +136,108 @@ const ServicesSection = () => {
                 }}
                 className="services-card"
               >
-                {/* Premium Glass Container for Logo/Icon */}
-                <div style={{
-                  position: "absolute",
-                  top: 20,
-                  left: 20,
-                  height: 40,
-                  padding: "6px 12px",
-                  background: "rgba(0, 0, 0, 0.03)",
-                  border: "1px solid rgba(0, 0, 0, 0.06)",
-                  borderRadius: 12,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  zIndex: 2,
-                }}>
-                  {renderServiceIcon(s.icon, {
-                    height: "22px",
-                    width: "auto",
-                    color: "#e53935",
-                    objectFit: "contain",
-                    opacity: 1
-                  })}
-                </div>
+                {/* Image Header Area */}
+                <div style={{ width: "100%", height: 130, position: "relative", overflow: "hidden", background: "#f4f7f6" }}>
+                  {s.image ? (
+                    <img src={s.image} alt={s.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(229,57,53,0.06) 0%, rgba(216,27,96,0.03) 100%)" }} />
+                  )}
 
-                {/* Category Pill Tag */}
-                <div style={{
-                  position: "absolute",
-                  top: 20,
-                  right: 20,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  padding: "5px 10px",
-                  borderRadius: 20,
-                  background: "rgba(0, 0, 0, 0.04)",
-                  border: "1px solid rgba(0, 0, 0, 0.06)",
-                  color: "#524449",
-                  zIndex: 2
-                }}>
-                  {s.category || "API"}
-                </div>
+                  {/* Floating Icon top left */}
+                  <div style={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    height: 32,
+                    padding: "4px 8px",
+                    background: "rgba(255, 255, 255, 0.9)",
+                    border: "1px solid rgba(0, 0, 0, 0.06)",
+                    borderRadius: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+                  }}>
+                    {renderServiceIcon(s.icon, {
+                      height: "16px",
+                      width: "auto",
+                      color: "#e53935",
+                      objectFit: "contain"
+                    })}
+                  </div>
 
-                {/* Radial glow */}
-                <div style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  width: "60%",
-                  height: "60%",
-                  background: "radial-gradient(circle at top right, rgba(229,57,53,0.01) 0%, transparent 70%)",
-                  pointerEvents: "none"
-                }} />
+                  {/* Category Pill Tag */}
+                  <div style={{
+                    position: "absolute",
+                    top: 12,
+                    right: 12,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    padding: "4px 8px",
+                    borderRadius: 20,
+                    background: "rgba(255, 255, 255, 0.9)",
+                    border: "1px solid rgba(0, 0, 0, 0.06)",
+                    color: "#524449",
+                    zIndex: 2,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+                  }}>
+                    {s.category || "API"}
+                  </div>
+                </div>
 
                 {/* Bottom content with Description */}
                 <div style={{
-                  width: "100%",
+                  padding: "16px 20px",
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                   boxSizing: "border-box",
                   zIndex: 1,
                   textAlign: "left"
                 }}>
-                  <h3 style={{
-                    fontFamily: "'Outfit',sans-serif",
-                    fontWeight: 800,
-                    fontSize: 17,
-                    color: "#0c0509",
-                    lineHeight: 1.3,
-                    margin: 0
-                  }}>
-                    {s.title}
-                  </h3>
-                  {s.description && (
-                    <p style={{
-                      fontSize: 12.5,
-                      color: "#524449",
-                      marginTop: 8,
-                      lineHeight: 1.5,
-                      opacity: 0.85,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                  <div>
+                    <h3 style={{
+                      fontFamily: "'Outfit',sans-serif",
+                      fontWeight: 800,
+                      fontSize: 16,
+                      color: "#0c0509",
+                      lineHeight: 1.3,
                       margin: 0
                     }}>
-                      {s.description}
-                    </p>
-                  )}
+                      {s.title}
+                    </h3>
+                    {s.description && (
+                      <p style={{
+                        fontSize: 12,
+                        color: "#524449",
+                        marginTop: 6,
+                        lineHeight: 1.45,
+                        opacity: 0.85,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        margin: 0
+                      }}>
+                        {s.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Accent Line */}
+                  <div style={{
+                    width: 24,
+                    height: 3,
+                    background: "#e53935",
+                    borderRadius: 2
+                  }} />
                 </div>
-
-                {/* Accent Line - Bottom Left indicator */}
-                <div style={{
-                  position: "absolute",
-                  bottom: 18,
-                  left: 24,
-                  width: 28,
-                  height: 3,
-                  background: "#e53935",
-                  borderRadius: 2
-                }} />
-
               </div>
             ))}
           </div>

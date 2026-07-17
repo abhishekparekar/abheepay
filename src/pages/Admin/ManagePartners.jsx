@@ -53,11 +53,39 @@ const ManagePartners = () => {
     loadData();
   };
 
+  /** Compress + resize image using Canvas before storing in Firestore.
+   *  Max width: 160px, max height: 80px, JPEG quality: 0.6
+   *  This keeps base64 well under Firestore's 1MB document limit.
+   */
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onloadend = () => setForm(f => ({ ...f, logo: reader.result }));
+    reader.onloadend = () => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX_W = 160;
+        const MAX_H = 80;
+        let w = img.width;
+        let h = img.height;
+
+        // Scale down proportionally
+        if (w > MAX_W) { h = Math.round((h * MAX_W) / w); w = MAX_W; }
+        if (h > MAX_H) { w = Math.round((w * MAX_H) / h); h = MAX_H; }
+
+        const canvas = document.createElement("canvas");
+        canvas.width  = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+
+        // Export as JPEG at 60% quality (keeps size tiny)
+        const compressed = canvas.toDataURL("image/jpeg", 0.6);
+        setForm(f => ({ ...f, logo: compressed }));
+      };
+      img.src = reader.result;
+    };
     reader.readAsDataURL(file);
   };
 

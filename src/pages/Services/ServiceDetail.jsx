@@ -184,6 +184,21 @@ const ServiceDetail = () => {
             </div>
           </div>
 
+          {/* Service Image Banner */}
+          {detail.image && (
+            <div style={{
+              width: "100%",
+              height: "clamp(160px, 35vh, 280px)",
+              overflow: "hidden",
+              borderRadius: 20,
+              marginBottom: 28,
+              border: "1px solid rgba(0,0,0,0.05)",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.02)"
+            }}>
+              <img src={detail.image} alt={detail.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
+          )}
+
           <p style={{
             color: "#524449",
             fontSize: 15,

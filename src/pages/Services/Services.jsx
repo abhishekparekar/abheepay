@@ -248,11 +248,13 @@ const Services = () => {
                   background: "#ffffff",
                   border: "1px solid rgba(0, 0, 0, 0.05)",
                   borderRadius: 24,
-                  padding: "32px 28px",
+                  overflow: "hidden",
                   boxShadow: "0 8px 30px rgba(0, 0, 0, 0.015)",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                   position: "relative",
-                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%"
                 }}
                   className="service-page-card"
                   onMouseEnter={(e) => {
@@ -265,35 +267,59 @@ const Services = () => {
                     e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.05)";
                     e.currentTarget.style.boxShadow = "0 8px 30px rgba(0, 0, 0, 0.015)";
                   }}>
-                  <div style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: 100,
-                    height: 100,
-                    background: `radial-gradient(circle, ${s.color || "#e53935"}08, transparent 70%)`,
-                    borderRadius: "0 24px 0 100%"
-                  }} />
-                  <div style={{ width: 44, height: 44, color: "#e53935", marginBottom: 20, display: "flex", alignItems: "center" }}>
-                    {renderServiceIcon(s.icon, { size: 40 })}
+                  {/* Top Image area */}
+                  <div style={{ width: "100%", height: 160, position: "relative", overflow: "hidden", background: "#f4f7f6" }}>
+                    {s.image ? (
+                      <img src={s.image} alt={s.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(229,57,53,0.06) 0%, rgba(216,27,96,0.03) 100%)" }} />
+                    )}
+
+                    {/* Floating Icon top left */}
+                    <div style={{
+                      position: "absolute",
+                      top: 16,
+                      left: 16,
+                      width: 36,
+                      height: 36,
+                      background: "rgba(255, 255, 255, 0.95)",
+                      border: "1px solid rgba(0, 0, 0, 0.06)",
+                      borderRadius: 10,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 2,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.06)"
+                    }}>
+                      {renderServiceIcon(s.icon, { size: 18, color: "#e53935" })}
+                    </div>
                   </div>
-                  <h2 style={{
-                    fontFamily: "'Outfit', sans-serif",
-                    fontWeight: 800,
-                    fontSize: 19,
-                    color: "#0c0509",
-                    marginBottom: 12,
-                    marginTop: 0
-                  }}>{s.title}</h2>
-                  <p style={{ color: "#524449", fontSize: 13.5, lineHeight: 1.7, marginBottom: 20 }}>{s.desc || s.description}</p>
-                  <ul style={{ display: "flex", flexDirection: "column", gap: 9, listStyle: "none", padding: 0, margin: 0 }}>
-                    {s.features && s.features.map((f) => (
-                      <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9, fontSize: 13, color: "#524449", lineHeight: 1.45 }}>
-                        <FiCheckCircle size={13} style={{ color: "#e53935", flexShrink: 0, marginTop: 2 }} />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                  {/* Card Content */}
+                  <div style={{ padding: "24px 24px 28px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <div>
+                      <h2 style={{
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 800,
+                        fontSize: 18,
+                        color: "#0c0509",
+                        marginBottom: 10,
+                        marginTop: 0
+                      }}>{s.title}</h2>
+                      <p style={{ color: "#524449", fontSize: 13.5, lineHeight: 1.6, marginBottom: 16 }}>{s.desc || s.description}</p>
+                      
+                      {s.features && (
+                        <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: "0 0 16px 0" }}>
+                          {s.features.map((f) => (
+                            <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: "#524449", lineHeight: 1.4 }}>
+                              <FiCheckCircle size={13} style={{ color: "#e53935", flexShrink: 0, marginTop: 2 }} />
+                              <span>{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
