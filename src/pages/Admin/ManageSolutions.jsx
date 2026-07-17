@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { getCollection, setDocument, deleteDocument } from "../../firebase/firestore";
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiUploadCloud } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiX } from "react-icons/fi";
+import IconPicker, { renderIcon } from "../../components/Admin/IconPicker";
+
+const defaultSolutions = [
+  { id: "qr-code-solutions", title: "QR Code Solutions", icon: "FiGrid", description: "Merchant-specific static & dynamic QR code setups with instant credit confirmations.", features: ["Dynamic UPI QR generation", "Instant payment SMS callbacks", "Soundbox sync compatibility"], benefits: ["Zero setup fee", "Universal app payments support", "Fast reconciliation analytics"], order: 1, active: true },
+  { id: "sound-box-services", title: "Sound Box Services", icon: "FiVolume2", description: "Instant voice announcement soundbox systems for walk-in retail transactions.", features: ["Multi-lingual audio announcements", "Sim-based GPRS connectivity", "Long battery life standby support"], benefits: ["Reduce payment confirmation fraud", "Boost teller cash efficiency", "Low subscription rental costs"], order: 2, active: true },
+  { id: "online-payment-gateway", title: "Online Payment Gateway", icon: "FiCreditCard", description: "Lightning-fast UPI, cards, and net-banking integration kits for developers.", features: ["150+ integrated payment modes", "Smart dynamic checkout UI templates", "Robust REST API wrappers"], benefits: ["Industry leading success rates", "Automated refunds engine", "Instant settlement availability"], order: 3, active: true },
+];
+
+const emptyForm = { title: "", icon: "FiLayers", image: "", description: "", features: "", benefits: "", order: 1, active: true };
 
 const ManageSolutions = () => {
   const { tenantId } = useAuth();
@@ -9,93 +18,35 @@ const ManageSolutions = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-
-  // Form State
-  const [form, setForm] = useState({
-    title: "",
-    icon: "FiLayers", // React Icon name or base64 data URL
-    description: "",
-    features: "",
-    benefits: "",
-    order: 1,
-    active: true
-  });
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState(emptyForm);
 
   const loadData = async () => {
     setLoading(true);
     try {
       let data = await getCollection(tenantId, "solutions");
       if (!data || data.length === 0) {
-        const defaults = [
-          {
-            id: "qr-code-solutions",
-            title: "QR Code Solutions",
-            icon: "FiGrid",
-            description: "Merchant-specific static & dynamic QR code setups with instant credit confirmations.",
-            features: ["Dynamic UPI QR generation", "Instant payment SMS callbacks", "Soundbox sync compatibility"],
-            benefits: ["Zero setup fee", "Universal app payments support", "Fast reconciliation analytics"],
-            order: 1,
-            active: true
-          },
-          {
-            id: "sound-box-services",
-            title: "Sound Box Services",
-            icon: "FiVolume2",
-            description: "Instant voice announcement soundbox systems for walk-in retail transactions.",
-            features: ["Multi-lingual audio announcements", "Sim-based GPRS connectivity", "Long battery life standby support"],
-            benefits: ["Reduce payment confirmation fraud", "Boost teller cash efficiency", "Low subscription rental costs"],
-            order: 2,
-            active: true
-          },
-          {
-            id: "online-payment-gateway",
-            title: "Online Payment Gateway",
-            icon: "FiCreditCard",
-            description: "Lightning-fast UPI, cards, and net-banking integration kits for developers.",
-            features: ["150+ integrated payment modes", "Smart dynamic checkout UI templates", "Robust rest API wrappers"],
-            benefits: ["Industry leading success rates", "Automated refunds engine", "Instant settlement availability"],
-            order: 3,
-            active: true
-          }
-        ];
-        for (const item of defaults) {
-          await setDocument(tenantId, "solutions", item.id, item);
-        }
+        for (const item of defaultSolutions) await setDocument(tenantId, "solutions", item.id, item);
         data = await getCollection(tenantId, "solutions");
       }
-      const sorted = [...data].sort((a, b) => (a.order || 0) - (b.order || 0));
-      setList(sorted);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+      setList([...data].sort((a, b) => (a.order || 0) - (b.order || 0)));
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); }
   };
+  useEffect(() => { loadData(); }, [tenantId]);
 
-  useEffect(() => {
-    loadData();
-  }, [tenantId]);
-
-  const handleOpenAdd = () => {
+  const openAdd = () => {
     setEditingItem(null);
-    setForm({
-      title: "",
-      icon: "FiLayers",
-      description: "",
-      features: "",
-      benefits: "",
-      order: list.length + 1,
-      active: true
-    });
+    setForm({ ...emptyForm, order: list.length + 1 });
     setModalOpen(true);
   };
-
-  const handleOpenEdit = (item) => {
+  const openEdit = (item) => {
     setEditingItem(item);
     setForm({
       title: item.title || "",
       icon: item.icon || "FiLayers",
-      description: item.description || item.desc || "",
+      image: item.image || "",
+      description: item.description || "",
       features: Array.isArray(item.features) ? item.features.join(", ") : (item.features || ""),
       benefits: Array.isArray(item.benefits) ? item.benefits.join(", ") : (item.benefits || ""),
       order: item.order || 1,
@@ -103,328 +54,195 @@ const ManageSolutions = () => {
     });
     setModalOpen(true);
   };
-
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this solution?")) return;
-    try {
-      await deleteDocument(tenantId, "solutions", id);
-      loadData();
-    } catch (err) {
-      console.error(err);
-    }
+    if (!window.confirm("Delete this solution?")) return;
+    await deleteDocument(tenantId, "solutions", id);
+    loadData();
   };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setForm(f => ({ ...f, icon: reader.result }));
-    };
+    reader.onloadend = () => setForm(f => ({ ...f, image: reader.result }));
     reader.readAsDataURL(file);
   };
 
   const onSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); setSaving(true);
     try {
-      const parsedFeatures = form.features
-        .split(",")
-        .map(f => f.trim())
-        .filter(f => f.length > 0);
-
-      const parsedBenefits = form.benefits
-        .split(",")
-        .map(b => b.trim())
-        .filter(b => b.length > 0);
-
-      const solutionId = editingItem ? editingItem.id : form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") || `solution-${Date.now()}`;
-      
-      const payload = {
-        id: solutionId,
+      const id = editingItem
+        ? editingItem.id
+        : (form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") || `solution-${Date.now()}`);
+      await setDocument(tenantId, "solutions", id, {
+        id,
         title: form.title,
         icon: form.icon,
+        image: form.image || "",
         description: form.description,
-        features: parsedFeatures,
-        benefits: parsedBenefits,
+        features: form.features.split(",").map(s => s.trim()).filter(Boolean),
+        benefits: form.benefits.split(",").map(s => s.trim()).filter(Boolean),
         order: Number(form.order),
         active: form.active,
         updatedAt: new Date()
-      };
-
-      await setDocument(tenantId, "solutions", solutionId, payload);
+      });
       setModalOpen(false);
       loadData();
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
+    finally { setSaving(false); }
   };
 
+  const isImg = (s) => s && (s.startsWith("data:") || s.startsWith("http") || s.startsWith("/"));
+
   return (
-    <div style={{ animation: "fadeIn 0.35s ease both" }} className="admin-page-container">
-      
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 36 }}>
-        <div>
-          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 28, margin: 0, color: "#0c0509" }}>
-            Configure Solutions
-          </h1>
-          <p style={{ color: "#524449", fontSize: 14.5, marginTop: 6, margin: 0 }}>
-            Configure technical system solution boxes showcased on your financial portals.
-          </p>
+    <div className="admin-page-container">
+
+      {/* Top Bar */}
+      <div className="admin-top-bar">
+        <div className="admin-page-title" style={{ marginBottom: 0 }}>
+          <h1>Manage Solutions</h1>
+          <p>Configure product solutions shown on the Solutions page.</p>
         </div>
-        <button
-          onClick={handleOpenAdd}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "12px 24px",
-            background: "linear-gradient(135deg,#e53935,#d81b60)",
-            borderRadius: 12,
-            fontWeight: 700,
-            fontSize: 14,
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            boxShadow: "0 4px 14px rgba(229,57,53,0.2)"
-          }}
-        >
-          <FiPlus size={16} /> Add Solution
+        <button className="admin-btn-primary" onClick={openAdd}>
+          <FiPlus size={15} /> Add Solution
         </button>
       </div>
 
-      {/* Solutions Table */}
+      {/* Table */}
       {loading ? (
-        <div style={{ padding: "80px 0", textAlign: "center", color: "#524449" }}>Loading solutions list...</div>
+        <div className="admin-empty">Loading…</div>
       ) : list.length === 0 ? (
-        <div style={{ padding: "80px 0", textAlign: "center", color: "#524449" }}>No solutions found. Add one above.</div>
+        <div className="admin-empty">No solutions found.</div>
       ) : (
-        <div style={{
-          background: "#ffffff",
-          border: "1px solid rgba(0, 0, 0, 0.05)",
-          borderRadius: 20,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.015)",
-          overflow: "hidden"
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)", background: "#f4f7f6" }}>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>ORDER</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>ICON / IMAGE</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>SOLUTION NAME</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>DESCRIPTION</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700 }}>STATUS</th>
-                <th style={{ padding: "18px 24px", fontSize: 13, color: "#524449", fontWeight: 700, textAlign: "right" }}>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((item, idx) => (
-                <tr key={item.id} style={{
-                  borderBottom: idx < list.length - 1 ? "1px solid rgba(0, 0, 0, 0.04)" : "none",
-                  transition: "background 0.2s ease"
-                }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#f9fbfb"}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-                >
-                  <td style={{ padding: "18px 24px", fontSize: 14.5, fontWeight: 700, color: "#e53935" }}>{item.order || 0}</td>
-                  <td style={{ padding: "18px 24px" }}>
-                    {item.icon && (item.icon.startsWith("data:") || item.icon.startsWith("http") || item.icon.startsWith("/")) ? (
-                      <img src={item.icon} alt="logo" style={{ height: 26, width: 26, objectFit: "contain" }} />
-                    ) : (
-                      <span style={{ fontSize: 14, fontWeight: 600, color: "#524449" }}>{item.icon || "FiLayers"}</span>
-                    )}
-                  </td>
-                  <td style={{ padding: "18px 24px", fontSize: 15, fontWeight: 700, color: "#0c0509" }}>{item.title}</td>
-                  <td style={{ padding: "18px 24px", fontSize: 14, color: "#524449", maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {item.description}
-                  </td>
-                  <td style={{ padding: "18px 24px" }}>
-                    <span style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: item.active !== false ? "#2e7d32" : "#e53935",
-                      background: item.active !== false ? "rgba(46,125,50,0.06)" : "rgba(229,57,53,0.06)",
-                      border: item.active !== false ? "1px solid rgba(46,125,50,0.15)" : "1px solid rgba(229,57,53,0.15)",
-                      padding: "4px 10px",
-                      borderRadius: 20
-                    }}>
-                      {item.active !== false ? "ACTIVE" : "INACTIVE"}
-                    </span>
-                  </td>
-                  <td style={{ padding: "18px 24px", textAlign: "right" }}>
-                    <div style={{ display: "inline-flex", gap: 10 }}>
-                      <button onClick={() => handleOpenEdit(item)} style={{ width: 34, height: 34, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", color: "#524449", cursor: "pointer", transition: "all 0.2s" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "#f4f7f6"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; }}
-                      >
-                        <FiEdit2 size={14} />
-                      </button>
-                      <button onClick={() => handleDelete(item.id)} style={{ width: 34, height: 34, borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", color: "#e53935", cursor: "pointer", transition: "all 0.2s" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(229,57,53,0.05)"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; }}
-                      >
-                        <FiTrash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
+        <div className="admin-table-wrap">
+          <div style={{ overflowX: "auto" }}>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th style={{ width: 50 }}>#</th>
+                  <th style={{ width: 60 }}>Icon</th>
+                  <th style={{ width: 70 }}>Image</th>
+                  <th>Title</th>
+                  <th style={{ width: 90 }}>Status</th>
+                  <th style={{ width: 90, textAlign: "right" }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {list.map((item) => (
+                  <tr key={item.id}>
+                    <td style={{ fontWeight: 700, color: "#e53935" }}>{item.order}</td>
+                    <td>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(229,57,53,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        {renderIcon(item.icon, 16, "#e53935")}
+                      </div>
+                    </td>
+                    <td>
+                      {isImg(item.image) ? (
+                        <img src={item.image} alt="" style={{ height: 32, width: 48, objectFit: "cover", borderRadius: 6, display: "block" }} />
+                      ) : (
+                        <span style={{ fontSize: 11, color: "#77676c" }}>No image</span>
+                      )}
+                    </td>
+                    <td style={{ fontWeight: 600 }}>
+                      <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 240 }}>{item.title}</div>
+                      <div style={{ fontSize: 12, color: "#77676c", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 240 }}>{item.description}</div>
+                    </td>
+                    <td>
+                      <span className={`admin-badge ${item.active !== false ? "green" : "red"}`}>
+                        {item.active !== false ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                        <button className="admin-btn-icon" onClick={() => openEdit(item)} title="Edit"><FiEdit2 size={14} /></button>
+                        <button className="admin-btn-icon danger" onClick={() => handleDelete(item.id)} title="Delete"><FiTrash2 size={14} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {/* Add/Edit Modal */}
+      {/* Modal */}
       {modalOpen && (
-        <div style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(17, 7, 9, 0.4)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-          backdropFilter: "blur(4px)"
-        }}>
-          <div style={{
-            background: "#ffffff",
-            border: "1px solid rgba(0,0,0,0.05)",
-            borderRadius: 24,
-            width: "90%",
-            maxWidth: 480,
-            padding: "24px 28px",
-            boxShadow: "0 20px 60px rgba(17,7,9,0.15)",
-            position: "relative",
-            maxHeight: "90vh",
-            overflowY: "auto"
-          }} className="admin-modal">
-            <button onClick={() => setModalOpen(false)} style={{ position: "absolute", top: 24, right: 24, color: "#524449", background: "none", border: "none", cursor: "pointer" }}>
+        <div className="admin-modal-overlay" onClick={() => setModalOpen(false)}>
+          <div className="admin-modal-box" style={{ maxWidth: 580 }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setModalOpen(false)} style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", cursor: "pointer", color: "#524449" }}>
               <FiX size={20} />
             </button>
-            <h2 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 20, color: "#0c0509", marginTop: 0 }}>
-              {editingItem ? "Edit Solution" : "Add Solution"}
-            </h2>
+            <h2 className="admin-modal-title">{editingItem ? "Edit Solution" : "Add Solution"}</h2>
 
             <form onSubmit={onSubmit}>
-              <div style={{ display: "grid", gridTemplateColumns: "3.2fr 1.8fr", gap: 12, marginBottom: 14 }}>
-                <div className="form-group">
-                  <label className="input-label">Solution Title</label>
-                  <input name="title" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className="input-field" placeholder="e.g. Neo-Banking Systems" />
-                </div>
-                <div className="form-group">
-                  <label className="input-label">React Icon Name</label>
-                  <input name="icon" required value={form.icon && (form.icon.startsWith("data:") || form.icon.startsWith("http")) ? "FiLayers" : form.icon} onChange={e => setForm(f => ({ ...f, icon: e.target.value }))} className="input-field" placeholder="e.g. FiLayers" />
+
+              <div className="admin-form-row">
+                <div className="admin-form-group" style={{ gridColumn: "1 / -1" }}>
+                  <label className="admin-form-label">Solution Title *</label>
+                  <input className="admin-form-input" required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. QR Code Solutions" />
                 </div>
               </div>
 
-              {/* Upload Custom Solution Image */}
-              <div className="form-group" style={{ marginBottom: 14 }}>
-                <label className="input-label" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <FiUploadCloud size={14} /> Upload Custom Logo/Image File
-                </label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="input-field" style={{ padding: "6px 12px" }} />
-                {form.icon && (form.icon.startsWith("data:") || form.icon.startsWith("http")) && (
-                  <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 11.5, color: "#524449", fontWeight: 600 }}>Preview:</span>
-                    <div style={{
-                      padding: 8,
-                      background: "#f4f7f6",
-                      borderRadius: 8,
-                      border: "1px solid rgba(0,0,0,0.06)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}>
-                      <img src={form.icon} alt="Preview" style={{ height: 36, width: 36, objectFit: "contain" }} />
-                    </div>
+              <div className="admin-form-group">
+                <label className="admin-form-label">Display Order</label>
+                <input className="admin-form-input" type="number" min="1" value={form.order} onChange={e => setForm(f => ({ ...f, order: e.target.value }))} style={{ maxWidth: 120 }} />
+              </div>
+
+              {/* Visual Icon Picker */}
+              <div className="admin-form-group">
+                <label className="admin-form-label">Select Icon</label>
+                <IconPicker value={form.icon} onChange={v => setForm(f => ({ ...f, icon: v }))} />
+              </div>
+
+              {/* Solution Image Upload */}
+              <div className="admin-form-group">
+                <label className="admin-form-label">Solution Image (shown on detail page)</label>
+                <input className="admin-form-input" type="file" accept="image/*" onChange={handleImageUpload} style={{ padding: "8px 12px", cursor: "pointer" }} />
+                {isImg(form.image) && (
+                  <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 10 }}>
+                    <img src={form.image} alt="preview" style={{ height: 56, width: 100, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(0,0,0,0.08)" }} />
+                    <button type="button" onClick={() => setForm(f => ({ ...f, image: "" }))} style={{ fontSize: 12, color: "#e53935", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                      Remove
+                    </button>
                   </div>
                 )}
               </div>
 
-              <div className="form-group">
-                <label className="input-label">Short Description</label>
-                <textarea name="description" required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="input-field" rows={2} placeholder="Explain the solution scope..." style={{ resize: "none" }} />
+              <div className="admin-form-group">
+                <label className="admin-form-label">Description *</label>
+                <textarea className="admin-form-textarea" required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Describe this solution…" style={{ minHeight: 70 }} />
               </div>
 
-              <div className="form-group">
-                <label className="input-label">Features list (Comma-separated)</label>
-                <input name="features" value={form.features} onChange={e => setForm(f => ({ ...f, features: e.target.value }))} className="input-field" placeholder="Card Issuance, API Led Ledger, Auto Reconciliation" />
+              <div className="admin-form-group">
+                <label className="admin-form-label">Features (comma-separated)</label>
+                <input className="admin-form-input" value={form.features} onChange={e => setForm(f => ({ ...f, features: e.target.value }))} placeholder="Feature 1, Feature 2, Feature 3" />
               </div>
 
-              <div className="form-group">
-                <label className="input-label">Benefits list (Comma-separated)</label>
-                <input name="benefits" value={form.benefits} onChange={e => setForm(f => ({ ...f, benefits: e.target.value }))} className="input-field" placeholder="Faster go-to-market, 40% cost reduction" />
+              <div className="admin-form-group">
+                <label className="admin-form-label">Benefits (comma-separated)</label>
+                <input className="admin-form-input" value={form.benefits} onChange={e => setForm(f => ({ ...f, benefits: e.target.value }))} placeholder="Benefit 1, Benefit 2" />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <div className="form-group">
-                  <label className="input-label">Display Order</label>
-                  <input type="number" name="order" value={form.order} onChange={e => setForm(f => ({ ...f, order: e.target.value }))} className="input-field" />
-                </div>
-                <div className="form-group" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <label className="input-label">Active Status</label>
-                  <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginTop: 8 }}>
-                    <input type="checkbox" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} style={{ width: 18, height: 18, accentColor: "#e53935" }} />
-                    <span style={{ fontSize: 14, color: "#524449", fontWeight: 600 }}>Live on website</span>
-                  </label>
-                </div>
+              <div className="admin-form-group">
+                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+                  <input type="checkbox" checked={form.active} onChange={e => setForm(f => ({ ...f, active: e.target.checked }))} style={{ width: 16, height: 16, accentColor: "#e53935" }} />
+                  <span style={{ fontSize: 13.5, color: "#524449" }}>Active — show on website</span>
+                </label>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24 }}>
-                <button type="button" onClick={() => setModalOpen(false)} style={{ padding: "11px 20px", borderRadius: 10, border: "1px solid #e1e6eb", background: "transparent", color: "#524449", fontWeight: 600, cursor: "pointer" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 20 }}>
+                <button type="button" onClick={() => setModalOpen(false)} style={{ padding: "9px 18px", borderRadius: 10, border: "1px solid rgba(0,0,0,0.1)", background: "#f9fafb", color: "#524449", fontWeight: 600, cursor: "pointer", fontSize: 13.5 }}>
                   Cancel
                 </button>
-                <button type="submit" style={{ padding: "11px 24px", borderRadius: 10, background: "linear-gradient(135deg,#e53935,#d81b60)", color: "#fff", fontWeight: 700, border: "none", cursor: "pointer" }}>
-                  Save Solution
+                <button type="submit" disabled={saving} className="admin-btn-primary">
+                  {saving ? "Saving…" : editingItem ? "Update Solution" : "Add Solution"}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      <style>{`
-        .admin-page-container .input-field {
-          width: 100%;
-          padding: 10px 12px;
-          border-radius: 8px;
-          border: 1px solid #e1e6eb;
-          font-size: 13.5px;
-          color: #0c0509;
-          outline: none;
-          background: #ffffff;
-          box-sizing: border-box;
-          transition: all 0.25s ease;
-        }
-        .admin-page-container .input-field:focus,
-        .admin-modal .input-field:focus {
-          border-color: #e53935 !important;
-          box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.08) !important;
-        }
-        .admin-page-container .input-label,
-        .admin-modal .input-label {
-          display: block;
-          font-size: 10.5px;
-          font-weight: 700;
-          color: #524449;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          margin-bottom: 4px;
-          margin-top: 10px;
-        }
-        .admin-modal .input-field {
-          width: 100%;
-          padding: 10px 12px;
-          border-radius: 8px;
-          border: 1px solid #e1e6eb;
-          font-size: 13.5px;
-          color: #0c0509;
-          outline: none;
-          background: #ffffff;
-          box-sizing: border-box;
-          transition: all 0.25s ease;
-        }
-      `}</style>
     </div>
   );
 };
