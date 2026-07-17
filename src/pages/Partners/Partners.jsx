@@ -447,57 +447,46 @@ const Partners = () => {
           pointerEvents: "none",
           filter: "blur(50px)"
         }} />
+        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: 640 }}>
+          <h2 style={{
+            fontFamily: "'Outfit',sans-serif",
+            fontWeight: 900,
+            fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
+            letterSpacing: "-0.01em",
+            color: "#fff",
+            marginBottom: 14,
+            marginTop: 0
+          }}>
+            Become Our Partner Today
+          </h2>
+          <p style={{ color: "#c9a8b4", maxWidth: 520, margin: "0 auto 28px", fontSize: 15, lineHeight: 1.6 }}>
+            Empower your merchant network with cutting-edge retail banking, utility payments, and financial API services.
+          </p>
 
-        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: 800 }}>
-          <div style={{
-            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            borderRadius: 24,
-            padding: "48px 32px",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06)",
-            backdropFilter: "blur(10px)",
-            textAlign: "center"
-          }} className="cta-glass-card">
-            <h2 style={{
-              fontFamily: "'Outfit',sans-serif",
-              fontWeight: 900,
-              fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
-              letterSpacing: "-0.01em",
+          <Link to={isAuthenticated ? "/admin" : "/register"} style={{ textDecoration: "none" }}>
+            <button style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "14px 36px",
+              background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
               color: "#fff",
-              marginBottom: 14,
-              marginTop: 0
-            }}>
-              Become Our Partner Today
-            </h2>
-            <p style={{ color: "#c9a8b4", maxWidth: 520, margin: "0 auto 28px", fontSize: 15, lineHeight: 1.6 }}>
-              Empower your merchant network with cutting-edge retail banking, utility payments, and financial API services.
-            </p>
-
-            <Link to={isAuthenticated ? "/admin" : "/register"} style={{ textDecoration: "none" }}>
-              <button style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "14px 36px",
-                background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
-                color: "#fff",
-                fontFamily: "'Inter', sans-serif",
-                fontWeight: 700,
-                fontSize: 14.5,
-                border: "none",
-                borderRadius: 12,
-                boxShadow: "0 6px 20px rgba(229, 57, 53, 0.3)",
-                cursor: "pointer",
-                transition: "all 0.25s ease",
-                letterSpacing: "0.02em"
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.45)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.3)"; }}
-              >
-                JOIN AS PARTNER NOW
-              </button>
-            </Link>
-          </div>
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 700,
+              fontSize: 14.5,
+              border: "none",
+              borderRadius: 12,
+              boxShadow: "0 6px 20px rgba(229, 57, 53, 0.3)",
+              cursor: "pointer",
+              transition: "all 0.25s ease",
+              letterSpacing: "0.02em"
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 28px rgba(229, 57, 53, 0.45)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(229, 57, 53, 0.3)"; }}
+            >
+              JOIN AS PARTNER NOW
+            </button>
+          </Link>
         </div>
       </section>
 
