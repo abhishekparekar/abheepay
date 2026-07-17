@@ -430,10 +430,7 @@ const Hero = () => {
             gap: 48px !important;
           }
           .hero-main-grid>div:last-child {
-            display: block !important;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
+            display: none !important;
           }
         }
         @media(max-width:480px){
