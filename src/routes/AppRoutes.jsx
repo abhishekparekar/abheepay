@@ -61,6 +61,8 @@ const AppRoutes = () => (
         <Route path="/terms"     element={<Terms />} />
         <Route path="*"          element={<Navigate to="/" replace />} />
       </Route>
+      {/* Fallback: redirect any unknown route to home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Suspense>
 );
