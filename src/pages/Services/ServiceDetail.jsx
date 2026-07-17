@@ -50,10 +50,10 @@ const ServiceDetail = () => {
   if (loading) {
     return (
       <div style={{
-        padding: "160px 24px 100px",
+        padding: "100px 16px 60px",
         textAlign: "center",
         background: "#f4f7f6",
-        minHeight: "80vh",
+        minHeight: "70vh",
         color: "#524449"
       }}>
         <h2>Loading service specifications...</h2>
@@ -64,20 +64,20 @@ const ServiceDetail = () => {
   if (!detail) {
     return (
       <div style={{
-        padding: "160px 24px 100px",
+        padding: "100px 16px 60px",
         textAlign: "center",
         background: "#f4f7f6",
-        minHeight: "80vh",
+        minHeight: "70vh",
         color: "#0c0509"
       }}>
-        <h1 style={{ fontSize: 32, marginBottom: 20 }}>Service Not Found</h1>
-        <p style={{ color: "#524449", marginBottom: 32 }}>
+        <h1 style={{ fontSize: 28, marginBottom: 16 }}>Service Not Found</h1>
+        <p style={{ color: "#524449", marginBottom: 24 }}>
           The requested service page does not exist or has been relocated.
         </p>
         <Link to="/services">
           <button style={{
-            padding: "12px 24px",
-            borderRadius: 12,
+            padding: "10px 20px",
+            borderRadius: 10,
             border: "none",
             background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
             color: "#fff",
@@ -100,8 +100,8 @@ const ServiceDetail = () => {
       </Helmet>
 
       <section style={{
-        paddingTop: 140,
-        paddingBottom: 100,
+        paddingTop: 96,
+        paddingBottom: 48,
         background: "linear-gradient(180deg, #f4f7f6 0%, #ffffff 100%)",
         color: "#0c0509",
         position: "relative",
@@ -110,15 +110,15 @@ const ServiceDetail = () => {
         {/* Subtle background glow */}
         <div style={{
           position: "absolute",
-          width: 500,
-          height: 500,
+          width: 400,
+          height: 400,
           top: -100,
           right: -100,
           background: "radial-gradient(circle, rgba(229,57,53,0.02) 0%, transparent 70%)",
           pointerEvents: "none"
         }} />
         
-        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: 900 }}>
+        <div className="container" style={{ position: "relative", zIndex: 1, maxWidth: 900, padding: "0 16px" }}>
           
           {/* Back button */}
           <Link to="/services" style={{
@@ -126,56 +126,56 @@ const ServiceDetail = () => {
             alignItems: "center",
             gap: 8,
             color: "#77676c",
-            fontSize: 14.5,
+            fontSize: 14,
             fontWeight: 600,
-            marginBottom: 36,
+            marginBottom: 20,
             textDecoration: "none",
             transition: "all 0.2s ease"
           }}
             onMouseEnter={e => e.currentTarget.style.color = "#e53935"}
             onMouseLeave={e => e.currentTarget.style.color = "#77676c"}
           >
-            <FiArrowLeft size={16} /> Back to Services
+            <FiArrowLeft size={15} /> Back to Services
           </Link>
 
           {/* Heading block */}
-          <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 18 }}>
             <div style={{
-              width: 72,
-              height: 72,
-              borderRadius: 20,
+              width: 56,
+              height: 56,
+              borderRadius: 16,
               background: "rgba(229, 57, 53, 0.05)",
               border: "1.5px solid rgba(229, 57, 53, 0.15)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               color: "#e53935",
-              boxShadow: "0 10px 30px rgba(229, 57, 53, 0.03)",
-              padding: 16,
-              boxSizing: "border-box"
+              padding: 12,
+              boxSizing: "border-box",
+              flexShrink: 0
             }}>
-              {renderServiceIcon(detail.icon, { size: 36 })}
+              {renderServiceIcon(detail.icon, { height: "24px", width: "auto", objectFit: "contain" })}
             </div>
             <div>
               <div style={{
                 display: "inline-block",
-                padding: "4px 10px",
+                padding: "3px 8px",
                 borderRadius: 20,
                 background: "rgba(229,57,53,0.06)",
                 border: "1px solid rgba(229,57,53,0.12)",
-                fontSize: 10.5,
+                fontSize: 10,
                 fontWeight: 700,
                 color: "#e53935",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
-                marginBottom: 6
+                marginBottom: 4
               }}>
                 {detail.category || "API"}
               </div>
               <h1 style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontWeight: 900,
-                fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)",
+                fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
                 letterSpacing: "-0.02em",
                 margin: 0
               }}>
@@ -186,9 +186,9 @@ const ServiceDetail = () => {
 
           <p style={{
             color: "#524449",
-            fontSize: 16.5,
-            lineHeight: 1.8,
-            marginBottom: 44,
+            fontSize: 15,
+            lineHeight: 1.7,
+            marginBottom: 28,
             maxWidth: 760,
             marginTop: 0
           }}>
@@ -198,39 +198,39 @@ const ServiceDetail = () => {
           <div style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 24,
-            marginBottom: 36
+            gap: 20,
+            marginBottom: 24
           }} className="detail-split-grid">
             
             {/* Features block */}
             <div style={{
               background: "#ffffff",
               border: "1px solid rgba(0, 0, 0, 0.05)",
-              borderRadius: 24,
-              padding: 32,
-              boxShadow: "0 8px 30px rgba(0,0,0,0.015)"
+              borderRadius: 20,
+              padding: "24px 20px",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.01)"
             }}>
               <h3 style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontWeight: 800,
-                fontSize: 17,
+                fontSize: 16,
                 color: "#0c0509",
-                marginBottom: 20,
+                marginBottom: 16,
                 marginTop: 0
               }}>
                 Core Features Included
               </h3>
-              <ul style={{ display: "flex", flexDirection: "column", gap: 14, listStyle: "none", padding: 0, margin: 0 }}>
+              <ul style={{ display: "flex", flexDirection: "column", gap: 10, listStyle: "none", padding: 0, margin: 0 }}>
                 {detail.features && detail.features.map((feat, idx) => (
                   <li key={idx} style={{
                     display: "flex",
                     alignItems: "flex-start",
-                    gap: 10,
-                    fontSize: 14,
+                    gap: 8,
+                    fontSize: 13.5,
                     color: "#524449",
-                    lineHeight: 1.5
+                    lineHeight: 1.45
                   }}>
-                    <FiCheckCircle size={14} style={{ color: "#e53935", flexShrink: 0, marginTop: 3 }} />
+                    <FiCheckCircle size={14} style={{ color: "#e53935", flexShrink: 0, marginTop: 2 }} />
                     <span>{feat}</span>
                   </li>
                 ))}
@@ -241,34 +241,40 @@ const ServiceDetail = () => {
             <div style={{
               background: "#ffffff",
               border: "1px solid rgba(0, 0, 0, 0.05)",
-              borderRadius: 24,
-              padding: 32,
-              boxShadow: "0 8px 30px rgba(0,0,0,0.015)"
+              borderRadius: 20,
+              padding: "24px 20px",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.01)"
             }}>
               <h3 style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontWeight: 800,
-                fontSize: 17,
+                fontSize: 16,
                 color: "#0c0509",
-                marginBottom: 20,
+                marginBottom: 16,
                 marginTop: 0
               }}>
                 Key Integration Benefits
               </h3>
-              <ul style={{ display: "flex", flexDirection: "column", gap: 14, listStyle: "none", padding: 0, margin: 0 }}>
-                {detail.benefits && detail.benefits.map((benefit, idx) => (
-                  <li key={idx} style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 10,
-                    fontSize: 14,
-                    color: "#524449",
-                    lineHeight: 1.5
-                  }}>
-                    <FiCheckCircle size={14} style={{ color: "#e53935", flexShrink: 0, marginTop: 3 }} />
-                    <span>{benefit}</span>
+              <ul style={{ display: "flex", flexDirection: "column", gap: 10, listStyle: "none", padding: 0, margin: 0 }}>
+                {detail.benefits && detail.benefits.length > 0 ? (
+                  detail.benefits.map((benefit, idx) => (
+                    <li key={idx} style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 8,
+                      fontSize: 13.5,
+                      color: "#524449",
+                      lineHeight: 1.45
+                    }}>
+                      <FiCheckCircle size={14} style={{ color: "#e53935", flexShrink: 0, marginTop: 2 }} />
+                      <span>{benefit}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ fontSize: 13.5, color: "#77676c", fontStyle: "italic" }}>
+                    No specific integration benefits listed.
                   </li>
-                ))}
+                )}
               </ul>
             </div>
           </div>
@@ -278,25 +284,25 @@ const ServiceDetail = () => {
             <div style={{
               background: "#ffffff",
               border: "1px solid rgba(0, 0, 0, 0.05)",
-              borderRadius: 24,
-              padding: 32,
-              boxShadow: "0 8px 30px rgba(0,0,0,0.015)",
-              marginBottom: 44
+              borderRadius: 20,
+              padding: "24px 20px",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.01)",
+              marginBottom: 24
             }}>
               <h3 style={{
                 fontFamily: "'Outfit', sans-serif",
                 fontWeight: 800,
-                fontSize: 17,
+                fontSize: 16,
                 color: "#0c0509",
-                marginBottom: 16,
+                marginBottom: 12,
                 marginTop: 0,
                 display: "flex",
                 alignItems: "center",
                 gap: 8
               }}>
-                <FiFileText size={18} style={{ color: "#e53935" }} /> Required Information &amp; Documents
+                <FiFileText size={16} style={{ color: "#e53935" }} /> Required Information &amp; Documents
               </h3>
-              <p style={{ color: "#524449", fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+              <p style={{ color: "#524449", fontSize: 13.5, lineHeight: 1.6, margin: 0 }}>
                 {detail.requiredInfo}
               </p>
             </div>
@@ -304,39 +310,39 @@ const ServiceDetail = () => {
 
           {/* Quick Inquiry CTA card */}
           <div style={{
-            background: "linear-gradient(135deg, rgba(229,57,53,0.06), rgba(216,27,96,0.03))",
-            border: "1px solid rgba(229, 57, 53, 0.15)",
-            borderRadius: 24,
-            padding: "40px 36px",
+            background: "linear-gradient(135deg, rgba(229,57,53,0.04), rgba(216,27,96,0.01))",
+            border: "1px solid rgba(229, 57, 53, 0.12)",
+            borderRadius: 20,
+            padding: "28px 24px",
             textAlign: "center"
           }}>
-            <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 20, color: "#0c0509", marginBottom: 12, marginTop: 0 }}>
+            <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 18, color: "#0c0509", marginBottom: 8, marginTop: 0 }}>
               Ready to deploy {detail.title}?
             </h3>
-            <p style={{ color: "#524449", fontSize: 14.5, marginBottom: 28, maxWidth: 500, margin: "0 auto 28px" }}>
+            <p style={{ color: "#524449", fontSize: 13.5, marginBottom: 20, maxWidth: 500, margin: "0 auto 20px" }}>
               Get detailed documentation, credentials keys, or request setup help from our technical onboarding team.
             </p>
             <Link to={detail.ctaLink || "/contact"} style={{ textDecoration: "none" }}>
               <button style={{
-                padding: "12px 28px",
-                borderRadius: 12,
+                padding: "10px 24px",
+                borderRadius: 10,
                 border: "none",
                 background: "linear-gradient(135deg, #e53935 0%, #d81b60 100%)",
                 color: "#fff",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 700,
-                fontSize: 14.5,
+                fontSize: 13.5,
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 cursor: "pointer",
-                boxShadow: "0 4px 16px rgba(229,57,53,0.22)",
+                boxShadow: "0 4px 12px rgba(229,57,53,0.18)",
                 transition: "all 0.2s ease"
               }}
                 onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.05)"; }}
                 onMouseLeave={e => { e.currentTarget.style.filter = "none"; }}
               >
-                <FiSend size={15} /> {detail.ctaText || "Apply Now"}
+                <FiSend size={14} /> {detail.ctaText || "Apply Now"}
               </button>
             </Link>
           </div>
@@ -348,7 +354,7 @@ const ServiceDetail = () => {
         @media(max-width:768px){
           .detail-split-grid {
             grid-template-columns: 1fr!important;
-            gap: 20px!important;
+            gap: 16px!important;
           }
         }
       `}</style>
